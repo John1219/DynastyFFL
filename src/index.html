@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NFL Rosters Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background: #f2f2f2; }
+        tr:nth-child(even) { background: #fafafa; }
+        .filters { margin-bottom: 1em; }
+        .filters label { margin-right: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Dynasty League Rosters</h1>
+    <div class="filters">
+        <label>
+            Team:
+            <select id="filter-team"><option value="">All</option></select>
+        </label>
+        <label>
+            Player:
+            <select id="filter-player"><option value="">All</option></select>
+        </label>
+        <label>
+            Position:
+            <select id="filter-position"><option value="">All</option></select>
+        </label>
+        <label>
+            NFL Team:
+            <select id="filter-nflteam"><option value="">All</option></select>
+        </label>
+        <label>
+            Status:
+            <select id="filter-status"><option value="">All</option></select>
+        </label>
+        <button id="clear-filters">Clear</button>
+    </div>
+    <div id="table-container">Loading...</div>
+    <script>
+        const csvPath = '../data/81689-rosters-nfl-1.csv';
+        let allData = [];
+        const headers = ["Team", "Player", "Position", "NFL Team", "Status"];
+
+        function renderTable(data) {
+            let html = '<table><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            data.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('table-container').innerHTML = html;
+        }
+
+        function populateDropdowns(data) {
+            const selects = [
+                { id: 'filter-team', col: 0 },
+                { id: 'filter-player', col: 1 },
+                { id: 'filter-position', col: 2 },
+                { id: 'filter-nflteam', col: 3 },
+                { id: 'filter-status', col: 4 }
+            ];
+            selects.forEach(sel => {
+                const select = document.getElementById(sel.id);
+                // Get unique values, filter out empty, sort
+                const options = Array.from(new Set(data.map(row => row[sel.col]).filter(Boolean))).sort();
+                // Remove all except the first option
+                while (select.options.length > 1) select.remove(1);
+                options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function filterData() {
+            const team = document.getElementById('filter-team').value;
+            const player = document.getElementById('filter-player').value;
+            const position = document.getElementById('filter-position').value;
+            const nflteam = document.getElementById('filter-nflteam').value;
+            const status = document.getElementById('filter-status').value;
+
+            const filtered = allData.filter(row => {
+                return (!team || row[0] === team) &&
+                       (!player || row[1] === player) &&
+                       (!position || row[2] === position) &&
+                       (!nflteam || row[3] === nflteam) &&
+                       (!status || row[4] === status);
+            });
+            renderTable(filtered);
+        }
+
+        fetch(csvPath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        allData = results.data;
+                        populateDropdowns(allData);
+                        renderTable(allData);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('table-container').innerText = 'Failed to load CSV file.';
+            });
+
+        document.querySelectorAll('.filters select').forEach(select => {
+            select.addEventListener('change', filterData);
+        });
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.querySelectorAll('.filters select').forEach(select => select.value = '');
+            renderTable(allData);
+        });
+    </script>
+</body>
+</html>
