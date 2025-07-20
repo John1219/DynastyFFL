@@ -2,44 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NFL Rosters Viewer</title>
+    <title>Dynasty FFL League</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 2em; }
+        h1, h2 { color: #2c3e50; }
+        nav { margin-bottom: 2em; }
+        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
+        nav a:hover { text-decoration: underline; }
+        .filters { margin-bottom: 1em; }
+        .filters label { margin-right: 1em; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
         th { background: #f2f2f2; }
         tr:nth-child(even) { background: #fafafa; }
-        .filters { margin-bottom: 1em; }
-        .filters label { margin-right: 1em; }
+        .section { margin-bottom: 2em; }
     </style>
 </head>
 <body>
-    <h1>Dynasty League Rosters</h1>
-    <div class="filters">
-        <label>
-            Team:
-            <select id="filter-team"><option value="">All</option></select>
-        </label>
-        <label>
-            Player:
-            <select id="filter-player"><option value="">All</option></select>
-        </label>
-        <label>
-            Position:
-            <select id="filter-position"><option value="">All</option></select>
-        </label>
-        <label>
-            NFL Team:
-            <select id="filter-nflteam"><option value="">All</option></select>
-        </label>
-        <label>
-            Status:
-            <select id="filter-status"><option value="">All</option></select>
-        </label>
-        <button id="clear-filters">Clear</button>
+    <h1>Dynasty Fantasy Football League</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#about">About</a>
+        <a href="#rosters">Rosters</a>
+        <a href="#schedule">Schedule</a>
+        <a href="teams.html">Teams</a>
+    </nav>
+    <div class="section" id="about">
+        <h2>About the League</h2>
+        <p>
+            Welcome to the Dynasty FFL! Established in 2011, our league is built for fantasy football managers who love the challenge of long-term team building, trading, and competition. 
+            Each manager keeps their roster year after year, making every draft pick and trade matter. 
+        </p>
+        <ul>
+            <li><strong>Founded:</strong> 2011</li>
+            <li><strong>Format:</strong> Dynasty (keep all players, annual rookie draft)</li>
+            <li><strong>Teams:</strong> 14</li>
+            <li><strong>Commissioner:</strong> John Thompson</li>
+            <li><strong>League Website:</strong> <a href="https://www.rtsports.com/fantasy-football-league/81689">rtsports.com</a></li>
+        </ul>
     </div>
-    <div id="table-container">Loading...</div>
+    <div class="section" id="rosters">
+        <h2>Current Rosters</h2>
+        <div class="filters">
+            <label>
+                Team:
+                <select id="filter-team"><option value="">All</option></select>
+            </label>
+            <label>
+                Player:
+                <select id="filter-player"><option value="">All</option></select>
+            </label>
+            <label>
+                Position:
+                <select id="filter-position"><option value="">All</option></select>
+            </label>
+            <label>
+                NFL Team:
+                <select id="filter-nflteam"><option value="">All</option></select>
+            </label>
+            <label>
+                Status:
+                <select id="filter-status"><option value="">All</option></select>
+            </label>
+            <button id="clear-filters">Clear</button>
+        </div>
+        <div id="table-container">Loading...</div>
+    </div>
+    <div class="section" id="schedule">
+        <h2>2025 League Schedule</h2>
+        <iframe src="../data/2025-schedule-81689.pdf" width="100%" height="800px" style="border:1px solid #ccc;">
+            <p>Your browser does not support PDFs. <a href="../data/2025-schedule-81689.pdf">Download the schedule PDF</a>.</p>
+        </iframe>
+    </div>
     <script>
         const csvPath = '../data/81689-rosters-nfl-1.csv';
         let allData = [];
@@ -68,9 +103,7 @@
             ];
             selects.forEach(sel => {
                 const select = document.getElementById(sel.id);
-                // Get unique values, filter out empty, sort
                 const options = Array.from(new Set(data.map(row => row[sel.col]).filter(Boolean))).sort();
-                // Remove all except the first option
                 while (select.options.length > 1) select.remove(1);
                 options.forEach(opt => {
                     const option = document.createElement('option');
@@ -122,6 +155,40 @@
             document.querySelectorAll('.filters select').forEach(select => select.value = '');
             renderTable(allData);
         });
+
+        // Load and display the schedule CSV as a table
+        const schedulePath = '../data/2025-schedule-81689.csv';
+        function renderScheduleTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('schedule-table').innerText = 'No schedule data available.';
+                return;
+            }
+            let html = '<table><thead><tr>';
+            data[0].forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            data.slice(1).forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('schedule-table').innerHTML = html;
+        }
+
+        fetch(schedulePath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        renderScheduleTable(results.data);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('schedule-table').innerText = 'Failed to load schedule.';
+            });
     </script>
 </body>
 </html>

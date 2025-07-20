@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynasty FFL Teams</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1, h2 { color: #2c3e50; }
+        nav { margin-bottom: 2em; }
+        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
+        nav a:hover { text-decoration: underline; }
+        .team-list { display: flex; flex-wrap: wrap; gap: 2em; }
+        .team-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 1em 2em;
+            background: #fafafa;
+            min-width: 220px;
+            margin-bottom: 1em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .team-number {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 0.75em;
+            color: #888;
+            font-weight: bold;
+            min-width: unset;
+            margin-right: 0;
+            text-align: left;
+            z-index: 2;
+            background: #fafafa;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        .team-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .team-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 0.5em;
+        }
+        .team-card h3 { margin-top: 0.5em; margin-bottom: 0.5em; }
+    </style>
+</head>
+<body>
+    <h1>Dynasty FFL Teams</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#rosters">Rosters</a>
+        <a href="index.html#schedule">Schedule</a>
+        <a href="teams.html">Teams</a>
+    </nav>
+    <div class="team-list" id="team-list">
+        <!-- Teams will be loaded here -->
+    </div>
+    <script>
+        const teamsCsvPath = '../data/Dynasty League Data - Teams.csv';
+
+        function renderTeams(teams) {
+            const container = document.getElementById('team-list');
+            container.innerHTML = '';
+            teams.forEach(team => {
+                // team: [Team, Name, Owner, LogoURL]
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                card.innerHTML = `
+                    <div class="team-number">#${team[0]}</div>
+                    <div class="team-card-content">
+                        <img src="${team[3]}" alt="${team[1]} logo" onerror="this.style.display='none'">
+                        <h3>${team[1]}</h3>
+                        <ul style="list-style:none;padding:0;">
+                            <li><strong>Owner:</strong> ${team[2]}</li>
+                        </ul>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        fetch(teamsCsvPath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        // Remove header row and any commented lines
+                        const data = results.data.filter(row => row[0] && !row[0].startsWith('//') && row[0] !== 'Team');
+                        renderTeams(data);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('team-list').innerText = 'Failed to load teams data.';
+            });
+    </script>
+</body>
+</html>
