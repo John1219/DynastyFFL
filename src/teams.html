@@ -67,44 +67,89 @@
     </div>
     <script>
         const teamsCsvPath = '../data/Dynasty League Data - Teams.csv';
+        const ownersCsvPath = '../data/Dynasty League Data - Owners.csv';
 
-        function renderTeams(teams) {
+        // Get the latest team info for each team number
+        function getLatestTeams(data) {
+            const latest = {};
+            data.forEach(row => {
+                const year = parseInt(row[0]);
+                const teamNum = row[1];
+                if (!latest[teamNum] || year > parseInt(latest[teamNum][0])) {
+                    latest[teamNum] = row;
+                }
+            });
+            return Object.values(latest).sort((a, b) => parseInt(a[1]) - parseInt(b[1]));
+        }
+
+        // Get the earliest owner year for each team number
+        function getFoundedYears(owners) {
+            const founded = {};
+            owners.forEach(row => {
+                const year = parseInt(row[0]);
+                const teamNum = row[1];
+                if (!founded[teamNum] || year < founded[teamNum]) {
+                    founded[teamNum] = year;
+                }
+            });
+            return founded;
+        }
+
+        // Render the team cards with founded date from owner data
+        function renderTeams(teams, foundedYears) {
             const container = document.getElementById('team-list');
             container.innerHTML = '';
             teams.forEach(team => {
-                // team: [Team, Name, Owner, LogoURL]
+                // team: [Year, Team, Name, LogoURL]
+                const teamNum = team[1];
+                const founded = foundedYears[teamNum] || team[0];
                 const card = document.createElement('div');
                 card.className = 'team-card';
                 card.innerHTML = `
-                    <div class="team-number">#${team[0]}</div>
-                    <div class="team-card-content">
-                        <img src="${team[3]}" alt="${team[1]} logo" onerror="this.style.display='none'">
-                        <h3>${team[1]}</h3>
-                        <ul style="list-style:none;padding:0;">
-                            <li><strong>Owner:</strong> ${team[2]}</li>
-                        </ul>
-                    </div>
+                    <a href="team-history.html?team=${teamNum}" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="team-number">#${teamNum}</div>
+                        <div class="team-card-content">
+                            <img src="${team[3] || ''}" alt="${team[2]} logo" onerror="this.style.display='none'">
+                            <h3>${team[2]}</h3>
+                            <ul style="list-style:none;padding:0;">
+                                <li><strong>Founded:</strong> ${founded}</li>
+                            </ul>
+                        </div>
+                    </a>
                 `;
                 container.appendChild(card);
             });
         }
 
-        fetch(teamsCsvPath)
-            .then(response => response.text())
-            .then(csvText => {
-                Papa.parse(csvText, {
-                    header: false,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        // Remove header row and any commented lines
-                        const data = results.data.filter(row => row[0] && !row[0].startsWith('//') && row[0] !== 'Team');
-                        renderTeams(data);
-                    }
-                });
-            })
-            .catch(err => {
-                document.getElementById('team-list').innerText = 'Failed to load teams data.';
+        // Load both CSVs and render
+        Promise.all([
+            fetch(teamsCsvPath).then(r => r.text()),
+            fetch(ownersCsvPath).then(r => r.text())
+        ]).then(([teamsCsv, ownersCsv]) => {
+            Papa.parse(teamsCsv, {
+                header: false,
+                skipEmptyLines: true,
+                complete: function(teamsResults) {
+                    Papa.parse(ownersCsv, {
+                        header: false,
+                        skipEmptyLines: true,
+                        complete: function(ownersResults) {
+                            const teamsData = teamsResults.data.filter(row =>
+                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                            );
+                            const ownersData = ownersResults.data.filter(row =>
+                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                            );
+                            const latestTeams = getLatestTeams(teamsData);
+                            const foundedYears = getFoundedYears(ownersData);
+                            renderTeams(latestTeams, foundedYears);
+                        }
+                    });
+                }
             });
+        }).catch(err => {
+            document.getElementById('team-list').innerText = 'Failed to load teams data.';
+        });
     </script>
 </body>
 </html>

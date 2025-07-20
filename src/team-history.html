@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynasty FFL Team History</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1, h2 { color: #2c3e50; }
+        nav { margin-bottom: 2em; }
+        nav a { margin-right: 1em; text-decoration: none, color: #2980b9; }
+        nav a:hover { text-decoration: underline; }
+        .history-table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
+        .history-table th, .history-table td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        .history-table th { background: #f2f2f2; }
+        .team-section { margin-bottom: 2em; }
+        .team-name { font-size: 1.2em; font-weight: bold; margin-bottom: 0.2em; }
+        .team-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5em; }
+        .back-link { margin-bottom: 1em; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>Dynasty FFL Team History</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="teams.html">Teams</a>
+    </nav>
+    <div id="history-container">Loading...</div>
+    <script>
+        // Get team number from query string
+        function getTeamNumberFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('team');
+        }
+
+        const teamsCsvPath = '../data/Dynasty League Data - Teams.csv';
+        const ownersCsvPath = '../data/Dynasty League Data - Owners.csv';
+
+        // Find the latest team info for a given team number
+        function getLatestTeamInfo(teamsData, teamNum) {
+            // Filter for this team number, then pick the row with the highest year
+            const filtered = teamsData.filter(row => row[1] === teamNum);
+            if (filtered.length === 0) return null;
+            return filtered.reduce((latest, row) => {
+                return parseInt(row[0]) > parseInt(latest[0]) ? row : latest;
+            }, filtered[0]);
+        }
+
+        // Get all name changes for a team, sorted by year descending
+        function getTeamNameHistory(teamsData, teamNum) {
+            return teamsData
+                .filter(row => row[1] === teamNum)
+                .map(row => ({ year: parseInt(row[0]), name: row[2] }))
+                .sort((a, b) => b.year - a.year);
+        }
+
+        function renderTeamHistory(team, owners, nameHistory) {
+            let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
+            html += `<div class="team-section">`;
+            if (team[3]) {
+                html += `<img class="team-logo" src="${team[3]}" alt="${team[2]} logo" onerror="this.style.display='none'">`;
+            }
+            html += `<div class="team-name">#${team[1]} - ${team[2]}</div>`;
+
+            // Current owner is the most recent owner by year
+            const currentOwner = owners.length > 0
+                ? owners.slice().sort((a, b) => b.year - a.year)[0].owner
+                : '';
+            html += `<div><strong>Current Owner:</strong> ${currentOwner}</div>`;
+
+            // Team Name Change History
+            if (nameHistory.length > 1) {
+                html += `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
+                nameHistory.forEach(entry => {
+                    html += `<li>${entry.year}: ${entry.name}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            html += `<table class="history-table"><thead><tr><th>Owner</th><th>Start Year</th><th>End Year</th></tr></thead><tbody>`;
+            if (owners.length > 0) {
+                // Sort descending by start year
+                owners = owners.slice().sort((a, b) => b.year - a.year);
+                for (let i = 0; i < owners.length; i++) {
+                    const startYear = owners[i].year;
+                    let endYear;
+                    if (i > 0) {
+                        endYear = owners[i - 1].year;
+                    } else {
+                        // If the owner matches the current owner, show "Present"
+                        endYear = (owners[i].owner === currentOwner) ? "Present" : "";
+                    }
+                    html += `<tr><td>${owners[i].owner}</td><td>${startYear}</td><td>${endYear}</td></tr>`;
+                }
+            } else {
+                html += `<tr><td colspan="3">No owner data</td></tr>`;
+            }
+            html += `</tbody></table></div>`;
+            document.getElementById('history-container').innerHTML = html;
+        }
+
+        // Load both CSVs and render
+        Promise.all([
+            fetch(teamsCsvPath).then(r => r.text()),
+            fetch(ownersCsvPath).then(r => r.text())
+        ]).then(([teamsCsv, ownersCsv]) => {
+            Papa.parse(teamsCsv, {
+                header: false,
+                skipEmptyLines: true,
+                complete: function(teamsResults) {
+                    Papa.parse(ownersCsv, {
+                        header: false,
+                        skipEmptyLines: true,
+                        complete: function(ownersResults) {
+                            const teamsData = teamsResults.data.filter(row =>
+                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                            );
+                            const ownersData = ownersResults.data.filter(row =>
+                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                            );
+                            const teamNum = getTeamNumberFromQuery();
+                            const team = getLatestTeamInfo(teamsData, teamNum);
+                            const nameHistory = getTeamNameHistory(teamsData, teamNum);
+                            const teamOwners = ownersData
+                                .filter(row => row[1] === teamNum)
+                                .map(row => ({ year: parseInt(row[0]), owner: row[2] }))
+                                .sort((a, b) => a.year - b.year);
+                            if (team) {
+                                renderTeamHistory(team, teamOwners, nameHistory);
+                            } else {
+                                document.getElementById('history-container').innerHTML = 'Team not found.';
+                            }
+                        }
+                    });
+                }
+            });
+        }).catch(() => {
+            document.getElementById('history-container').innerText = 'Failed to load team history data.';
+        });
+    </script>
+</body>
+</html>
