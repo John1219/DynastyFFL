@@ -8,7 +8,7 @@
         body { font-family: Arial, sans-serif; margin: 2em; }
         h1, h2 { color: #2c3e50; }
         nav { margin-bottom: 2em; }
-        nav a { margin-right: 1em; text-decoration: none, color: #2980b9; }
+        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
         nav a:hover { text-decoration: underline; }
         .history-table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
         .history-table th, .history-table td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
@@ -77,7 +77,8 @@
                 html += `</ul></div>`;
             }
 
-            html += `<table class="history-table"><thead><tr><th>Owner</th><th>Start Year</th><th>End Year</th></tr></thead><tbody>`;
+            // Owner History as bulleted list
+            html += `<div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
             if (owners.length > 0) {
                 // Sort descending by start year
                 owners = owners.slice().sort((a, b) => b.year - a.year);
@@ -87,15 +88,15 @@
                     if (i > 0) {
                         endYear = owners[i - 1].year;
                     } else {
-                        // If the owner matches the current owner, show "Present"
                         endYear = (owners[i].owner === currentOwner) ? "Present" : "";
                     }
-                    html += `<tr><td>${owners[i].owner}</td><td>${startYear}</td><td>${endYear}</td></tr>`;
+                    html += `<li>${owners[i].owner}: ${startYear} - ${endYear}</li>`;
                 }
             } else {
-                html += `<tr><td colspan="3">No owner data</td></tr>`;
+                html += `<li>No owner data</li>`;
             }
-            html += `</tbody></table></div>`;
+            html += `</ul></div>`;
+
             document.getElementById('history-container').innerHTML = html;
         }
 

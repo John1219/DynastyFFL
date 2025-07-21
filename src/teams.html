@@ -82,27 +82,30 @@
             return Object.values(latest).sort((a, b) => parseInt(a[1]) - parseInt(b[1]));
         }
 
-        // Get the earliest owner year for each team number
-        function getFoundedYears(owners) {
-            const founded = {};
+        // Get the current owner for each team number (latest year)
+        function getCurrentOwners(owners) {
+            const current = {};
             owners.forEach(row => {
                 const year = parseInt(row[0]);
                 const teamNum = row[1];
-                if (!founded[teamNum] || year < founded[teamNum]) {
-                    founded[teamNum] = year;
+                if (!current[teamNum] || year > current[teamNum].year) {
+                    current[teamNum] = { year, owner: row[2] };
                 }
             });
-            return founded;
+            Object.keys(current).forEach(teamNum => {
+                current[teamNum] = current[teamNum].owner;
+            });
+            return current;
         }
 
-        // Render the team cards with founded date from owner data
-        function renderTeams(teams, foundedYears) {
+        // Render the team cards with current owner
+        function renderTeams(teams, currentOwners) {
             const container = document.getElementById('team-list');
             container.innerHTML = '';
             teams.forEach(team => {
                 // team: [Year, Team, Name, LogoURL]
                 const teamNum = team[1];
-                const founded = foundedYears[teamNum] || team[0];
+                const owner = currentOwners[teamNum] || 'Unknown';
                 const card = document.createElement('div');
                 card.className = 'team-card';
                 card.innerHTML = `
@@ -112,7 +115,7 @@
                             <img src="${team[3] || ''}" alt="${team[2]} logo" onerror="this.style.display='none'">
                             <h3>${team[2]}</h3>
                             <ul style="list-style:none;padding:0;">
-                                <li><strong>Founded:</strong> ${founded}</li>
+                                <li><strong>Current Owner:</strong> ${owner}</li>
                             </ul>
                         </div>
                     </a>
@@ -141,8 +144,8 @@
                                 row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
                             );
                             const latestTeams = getLatestTeams(teamsData);
-                            const foundedYears = getFoundedYears(ownersData);
-                            renderTeams(latestTeams, foundedYears);
+                            const currentOwners = getCurrentOwners(ownersData);
+                            renderTeams(latestTeams, currentOwners);
                         }
                     });
                 }
