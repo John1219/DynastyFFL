@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynasty FFL Schedule</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1 { color: #2c3e50; }
+        nav { margin-bottom: 2em; }
+        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
+        nav a:hover { text-decoration: underline; }
+        .filters { margin-bottom: 1em; }
+        .filters label { margin-right: 1em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background: #f2f2f2; }
+        tr:nth-child(even) { background: #fafafa; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Dynasty FFL Schedule</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="teams.html">Teams</a>
+        <a href="schedule.html">Schedule</a>
+    </nav>
+    <div class="section">
+        <div class="filters">
+            <label>
+                Year:
+                <select id="filter-year"><option value="">All</option></select>
+            </label>
+            <label>
+                Week:
+                <select id="filter-week"><option value="">All</option></select>
+            </label>
+            <label>
+                Team:
+                <select id="filter-team"><option value="">All</option></select>
+            </label>
+            <button id="clear-filters">Clear</button>
+        </div>
+        <div id="schedule-table">Loading...</div>
+    </div>
+    <script>
+        const csvPath = '../data/Dynasty League Data - Schedule.csv';
+        let allData = [];
+        let headers = [];
+
+        function renderTable(data) {
+            let html = '<table><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            data.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('schedule-table').innerHTML = html;
+        }
+
+        function populateDropdowns(data) {
+            // Year,Week,Game,Home Team,Away Team
+            const yearSet = new Set();
+            const weekSet = new Set();
+            const teamSet = new Set();
+            data.forEach(row => {
+                yearSet.add(row[0]);
+                weekSet.add(row[1]);
+                teamSet.add(row[3]);
+                teamSet.add(row[4]);
+            });
+            const yearSel = document.getElementById('filter-year');
+            const weekSel = document.getElementById('filter-week');
+            const teamSel = document.getElementById('filter-team');
+            [yearSel, weekSel, teamSel].forEach(sel => {
+                while (sel.options.length > 1) sel.remove(1);
+            });
+            Array.from(yearSet).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                yearSel.appendChild(option);
+            });
+            Array.from(weekSet).sort((a, b) => a - b).forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                weekSel.appendChild(option);
+            });
+            Array.from(teamSet).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                teamSel.appendChild(option);
+            });
+        }
+
+        function filterData() {
+            const year = document.getElementById('filter-year').value;
+            const week = document.getElementById('filter-week').value;
+            const team = document.getElementById('filter-team').value;
+            const filtered = allData.filter(row => {
+                return (!year || row[0] === year)
+                    && (!week || row[1] === week)
+                    && (!team || row[3] === team || row[4] === team);
+            });
+            renderTable(filtered);
+        }
+
+        fetch(csvPath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        // Remove header and commented lines
+                        const data = results.data.filter(row =>
+                            row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                        );
+                        headers = results.data[0].map(h => h.replace(/^\W+|\W+$/g, ''));
+                        allData = data;
+                        populateDropdowns(allData);
+                        renderTable(allData);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('schedule-table').innerText = 'Failed to load schedule data.';
+            });
+
+        document.querySelectorAll('.filters select').forEach(select => {
+            select.addEventListener('change', filterData);
+        });
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.querySelectorAll('.filters select').forEach(select => select.value = '');
+            renderTable(allData);
+        });
+    </script>
+</body>

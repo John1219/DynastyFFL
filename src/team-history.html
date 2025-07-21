@@ -35,6 +35,7 @@
 
         const teamsCsvPath = '../data/Dynasty League Data - Teams.csv';
         const ownersCsvPath = '../data/Dynasty League Data - Owners.csv';
+        const scheduleCsvPath = '../data/Dynasty League Data - Schedule.csv';
 
         // Find the latest team info for a given team number
         function getLatestTeamInfo(teamsData, teamNum) {
@@ -54,7 +55,28 @@
                 .sort((a, b) => b.year - a.year);
         }
 
-        function renderTeamHistory(team, owners, nameHistory) {
+        // Accepts an array of names
+        function renderTeamSchedule(schedule, teamNames) {
+            if (!schedule.length) return '';
+            let html = `<div style="margin:1em 0;"><strong>Team Schedule:</strong><table class="history-table"><thead><tr><th>Year</th><th>Week</th><th>Opponent</th><th>Home/Away</th></tr></thead><tbody>`;
+            schedule.forEach(game => {
+                // Check if this team played as home or away under any historic name
+                let isHome = teamNames.includes(game[3]);
+                let isAway = teamNames.includes(game[4]);
+                if (!isHome && !isAway) return; // skip if not this team
+                const opponent = isHome ? game[4] : game[3];
+                html += `<tr>
+                    <td>${game[0]}</td>
+                    <td>${game[1]}</td>
+                    <td>${opponent}</td>
+                    <td>${isHome ? 'Home' : 'Away'}</td>
+                </tr>`;
+            });
+            html += `</tbody></table></div>`;
+            return html;
+        }
+
+        function renderTeamHistory(team, owners, nameHistory, schedule) {
             let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
             html += `<div class="team-section">`;
             if (team[3]) {
@@ -97,14 +119,20 @@
             }
             html += `</ul></div>`;
 
+            // Team Schedule for all historic names
+            const allNames = nameHistory.map(n => n.name);
+            html += renderTeamSchedule(schedule, allNames);
+
+            html += `</div>`;
             document.getElementById('history-container').innerHTML = html;
         }
 
-        // Load both CSVs and render
+        // Load all CSVs and render
         Promise.all([
             fetch(teamsCsvPath).then(r => r.text()),
-            fetch(ownersCsvPath).then(r => r.text())
-        ]).then(([teamsCsv, ownersCsv]) => {
+            fetch(ownersCsvPath).then(r => r.text()),
+            fetch(scheduleCsvPath).then(r => r.text())
+        ]).then(([teamsCsv, ownersCsv, scheduleCsv]) => {
             Papa.parse(teamsCsv, {
                 header: false,
                 skipEmptyLines: true,
@@ -113,24 +141,40 @@
                         header: false,
                         skipEmptyLines: true,
                         complete: function(ownersResults) {
-                            const teamsData = teamsResults.data.filter(row =>
-                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
-                            );
-                            const ownersData = ownersResults.data.filter(row =>
-                                row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
-                            );
-                            const teamNum = getTeamNumberFromQuery();
-                            const team = getLatestTeamInfo(teamsData, teamNum);
-                            const nameHistory = getTeamNameHistory(teamsData, teamNum);
-                            const teamOwners = ownersData
-                                .filter(row => row[1] === teamNum)
-                                .map(row => ({ year: parseInt(row[0]), owner: row[2] }))
-                                .sort((a, b) => a.year - b.year);
-                            if (team) {
-                                renderTeamHistory(team, teamOwners, nameHistory);
-                            } else {
-                                document.getElementById('history-container').innerHTML = 'Team not found.';
-                            }
+                            Papa.parse(scheduleCsv, {
+                                header: false,
+                                skipEmptyLines: true,
+                                complete: function(scheduleResults) {
+                                    const teamsData = teamsResults.data.filter(row =>
+                                        row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                                    );
+                                    const ownersData = ownersResults.data.filter(row =>
+                                        row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                                    );
+                                    const scheduleData = scheduleResults.data.filter(row =>
+                                        row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
+                                    );
+                                    const teamNum = getTeamNumberFromQuery();
+                                    const team = getLatestTeamInfo(teamsData, teamNum);
+                                    const nameHistory = getTeamNameHistory(teamsData, teamNum);
+                                    const teamOwners = ownersData
+                                        .filter(row => row[1] === teamNum)
+                                        .map(row => ({ year: parseInt(row[0]), owner: row[2] }))
+                                        .sort((a, b) => a.year - b.year);
+
+                                    // Find all schedule rows where this team is Home or Away under any name
+                                    const allNames = nameHistory.map(n => n.name);
+                                    const teamSchedule = scheduleData.filter(row =>
+                                        allNames.includes(row[3]) || allNames.includes(row[4])
+                                    );
+
+                                    if (team) {
+                                        renderTeamHistory(team, teamOwners, nameHistory, teamSchedule);
+                                    } else {
+                                        document.getElementById('history-container').innerHTML = 'Team not found.';
+                                    }
+                                }
+                            });
                         }
                     });
                 }

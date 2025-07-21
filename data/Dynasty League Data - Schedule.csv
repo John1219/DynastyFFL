@@ -1,0 +1,381 @@
+Year,Week,Game,Home Team,Away Team
+2011,1,1,THE Great Chewbaccas,Ghost of Derrick Thomas
+2011,1,2,THE Great Chewbaccas,MC Gusto
+2011,1,3,MC Gusto,Team Thompson
+2011,1,4,He Hate Me,Ghost of Derrick Thomas
+2011,1,5,He Hate Me,Phinatics
+2011,1,6,GoodFellas,Team Thompson
+2011,1,7,GoodFellas,Pestilence
+2011,1,8,Brees Nuts,Phinatics
+2011,1,9,Brees Nuts,Team Colbert
+2011,1,10,Crackers,Pestilence
+2011,1,11,Crackers,Team Christman
+2011,1,12,Pillshovellers,Team Colbert
+2011,1,13,Pillshovellers,Scalp Hunters
+2011,1,14,Scalp Hunters,Team Christman
+2011,1,15,MC Gusto,* League Average
+2011,1,16,He Hate Me,* League Average
+2011,1,17,GoodFellas,* League Average
+2011,1,18,Brees Nuts,* League Average
+2011,1,19,Crackers,* League Average
+2011,1,20,Pillshovellers,* League Average
+2011,1,21,Scalp Hunters,* League Average
+2011,1,22,Team Christman,* League Average
+2011,1,23,Team Colbert,* League Average
+2011,1,24,Pestilence,* League Average
+2011,1,25,Phinatics,* League Average
+2011,1,26,Team Thompson,* League Average
+2011,1,27,Ghost of Derrick Thomas,* League Average
+2011,1,28,THE Great Chewbaccas,* League Average
+2011,2,29,THE Great Chewbaccas,He Hate Me
+2011,2,30,THE Great Chewbaccas,GoodFellas
+2011,2,31,GoodFellas,MC Gusto
+2011,2,32,Brees Nuts,He Hate Me
+2011,2,33,Brees Nuts,Ghost of Derrick Thomas
+2011,2,34,Crackers,MC Gusto
+2011,2,35,Crackers,Team Thompson
+2011,2,36,Pillshovellers,Ghost of Derrick Thomas
+2011,2,37,Pillshovellers,Phinatics
+2011,2,38,Scalp Hunters,Team Thompson
+2011,2,39,Scalp Hunters,Pestilence
+2011,2,40,Team Christman,Phinatics
+2011,2,41,Team Christman,Team Colbert
+2011,2,42,Team Colbert,Pestilence
+2011,2,43,MC Gusto,* League Average
+2011,2,44,He Hate Me,* League Average
+2011,2,45,GoodFellas,* League Average
+2011,2,46,Brees Nuts,* League Average
+2011,2,47,Crackers,* League Average
+2011,2,48,Pillshovellers,* League Average
+2011,2,49,Scalp Hunters,* League Average
+2011,2,50,Team Christman,* League Average
+2011,2,51,Team Colbert,* League Average
+2011,2,52,Pestilence,* League Average
+2011,2,53,Phinatics,* League Average
+2011,2,54,Team Thompson,* League Average
+2011,2,55,Ghost of Derrick Thomas,* League Average
+2011,2,56,THE Great Chewbaccas,* League Average
+2011,3,57,THE Great Chewbaccas,Brees Nuts
+2011,3,58,THE Great Chewbaccas,Crackers
+2011,3,59,Crackers,GoodFellas
+2011,3,60,Pillshovellers,Brees Nuts
+2011,3,61,Pillshovellers,He Hate Me
+2011,3,62,Scalp Hunters,GoodFellas
+2011,3,63,Scalp Hunters,MC Gusto
+2011,3,64,Team Christman,He Hate Me
+2011,3,65,Team Christman,Ghost of Derrick Thomas
+2011,3,66,Team Colbert,MC Gusto
+2011,3,67,Team Colbert,Team Thompson
+2011,3,68,Pestilence,Ghost of Derrick Thomas
+2011,3,69,Pestilence,Phinatics
+2011,3,70,Phinatics,Team Thompson
+2011,3,71,MC Gusto,* League Average
+2011,3,72,He Hate Me,* League Average
+2011,3,73,GoodFellas,* League Average
+2011,3,74,Brees Nuts,* League Average
+2011,3,75,Crackers,* League Average
+2011,3,76,Pillshovellers,* League Average
+2011,3,77,Scalp Hunters,* League Average
+2011,3,78,Team Christman,* League Average
+2011,3,79,Team Colbert,* League Average
+2011,3,80,Pestilence,* League Average
+2011,3,81,Phinatics,* League Average
+2011,3,82,Team Thompson,* League Average
+2011,3,83,Ghost of Derrick Thomas,* League Average
+2011,3,84,THE Great Chewbaccas,* League Average
+2011,4,85,THE Great Chewbaccas,Pillshovellers
+2011,4,86,THE Great Chewbaccas,Scalp Hunters
+2011,4,87,Scalp Hunters,Crackers
+2011,4,88,Team Christman,Pillshovellers
+2011,4,89,Team Christman,Brees Nuts
+2011,4,90,Team Colbert,Crackers
+2011,4,91,Team Colbert,GoodFellas
+2011,4,92,Pestilence,Brees Nuts
+2011,4,93,Pestilence,He Hate Me
+2011,4,94,Phinatics,GoodFellas
+2011,4,95,Phinatics,MC Gusto
+2011,4,96,Team Thompson,He Hate Me
+2011,4,97,Team Thompson,Ghost of Derrick Thomas
+2011,4,98,Ghost of Derrick Thomas,MC Gusto
+2011,4,99,MC Gusto,* League Average
+2011,4,100,He Hate Me,* League Average
+2011,4,101,GoodFellas,* League Average
+2011,4,102,Brees Nuts,* League Average
+2011,4,103,Crackers,* League Average
+2011,4,104,Pillshovellers,* League Average
+2011,4,105,Scalp Hunters,* League Average
+2011,4,106,Team Christman,* League Average
+2011,4,107,Team Colbert,* League Average
+2011,4,108,Pestilence,* League Average
+2011,4,109,Phinatics,* League Average
+2011,4,110,Team Thompson,* League Average
+2011,4,111,Ghost of Derrick Thomas,* League Average
+2011,4,112,THE Great Chewbaccas,* League Average
+2011,5,113,THE Great Chewbaccas,Team Christman
+2011,5,114,THE Great Chewbaccas,Team Colbert
+2011,5,115,Team Colbert,Scalp Hunters
+2011,5,116,Pestilence,Team Christman
+2011,5,117,Pestilence,Pillshovellers
+2011,5,118,Phinatics,Scalp Hunters
+2011,5,119,Phinatics,Crackers
+2011,5,120,Team Thompson,Pillshovellers
+2011,5,121,Team Thompson,Brees Nuts
+2011,5,122,Ghost of Derrick Thomas,Crackers
+2011,5,123,Ghost of Derrick Thomas,GoodFellas
+2011,5,124,MC Gusto,Brees Nuts
+2011,5,125,MC Gusto,He Hate Me
+2011,5,126,He Hate Me,GoodFellas
+2011,5,127,MC Gusto,* League Average
+2011,5,128,He Hate Me,* League Average
+2011,5,129,GoodFellas,* League Average
+2011,5,130,Brees Nuts,* League Average
+2011,5,131,Crackers,* League Average
+2011,5,132,Pillshovellers,* League Average
+2011,5,133,Scalp Hunters,* League Average
+2011,5,134,Team Christman,* League Average
+2011,5,135,Team Colbert,* League Average
+2011,5,136,Pestilence,* League Average
+2011,5,137,Phinatics,* League Average
+2011,5,138,Team Thompson,* League Average
+2011,5,139,Ghost of Derrick Thomas,* League Average
+2011,5,140,THE Great Chewbaccas,* League Average
+2011,6,141,THE Great Chewbaccas,Pestilence
+2011,6,142,THE Great Chewbaccas,Phinatics
+2011,6,143,Phinatics,Team Colbert
+2011,6,144,Team Thompson,Pestilence
+2011,6,145,Team Thompson,Team Christman
+2011,6,146,Ghost of Derrick Thomas,Team Colbert
+2011,6,147,Ghost of Derrick Thomas,Scalp Hunters
+2011,6,148,MC Gusto,Team Christman
+2011,6,149,MC Gusto,Pillshovellers
+2011,6,150,He Hate Me,Scalp Hunters
+2011,6,151,He Hate Me,Crackers
+2011,6,152,GoodFellas,Pillshovellers
+2011,6,153,GoodFellas,Brees Nuts
+2011,6,154,Brees Nuts,Crackers
+2011,6,155,MC Gusto,* League Average
+2011,6,156,He Hate Me,* League Average
+2011,6,157,GoodFellas,* League Average
+2011,6,158,Brees Nuts,* League Average
+2011,6,159,Crackers,* League Average
+2011,6,160,Pillshovellers,* League Average
+2011,6,161,Scalp Hunters,* League Average
+2011,6,162,Team Christman,* League Average
+2011,6,163,Team Colbert,* League Average
+2011,6,164,Pestilence,* League Average
+2011,6,165,Phinatics,* League Average
+2011,6,166,Team Thompson,* League Average
+2011,6,167,Ghost of Derrick Thomas,* League Average
+2011,6,168,THE Great Chewbaccas,* League Average
+2011,7,169,THE Great Chewbaccas,Team Thompson
+2011,7,170,THE Great Chewbaccas,Ghost of Derrick Thomas
+2011,7,171,Ghost of Derrick Thomas,Phinatics
+2011,7,172,MC Gusto,Team Thompson
+2011,7,173,MC Gusto,Pestilence
+2011,7,174,He Hate Me,Phinatics
+2011,7,175,He Hate Me,Team Colbert
+2011,7,176,GoodFellas,Pestilence
+2011,7,177,GoodFellas,Team Christman
+2011,7,178,Brees Nuts,Team Colbert
+2011,7,179,Brees Nuts,Scalp Hunters
+2011,7,180,Crackers,Team Christman
+2011,7,181,Crackers,Pillshovellers
+2011,7,182,Pillshovellers,Scalp Hunters
+2011,7,183,MC Gusto,* League Average
+2011,7,184,He Hate Me,* League Average
+2011,7,185,GoodFellas,* League Average
+2011,7,186,Brees Nuts,* League Average
+2011,7,187,Crackers,* League Average
+2011,7,188,Pillshovellers,* League Average
+2011,7,189,Scalp Hunters,* League Average
+2011,7,190,Team Christman,* League Average
+2011,7,191,Team Colbert,* League Average
+2011,7,192,Pestilence,* League Average
+2011,7,193,Phinatics,* League Average
+2011,7,194,Team Thompson,* League Average
+2011,7,195,Ghost of Derrick Thomas,* League Average
+2011,7,196,THE Great Chewbaccas,* League Average
+2011,8,197,THE Great Chewbaccas,MC Gusto
+2011,8,198,THE Great Chewbaccas,He Hate Me
+2011,8,199,He Hate Me,Ghost of Derrick Thomas
+2011,8,200,GoodFellas,MC Gusto
+2011,8,201,GoodFellas,Team Thompson
+2011,8,202,Brees Nuts,Ghost of Derrick Thomas
+2011,8,203,Brees Nuts,Phinatics
+2011,8,204,Crackers,Team Thompson
+2011,8,205,Crackers,Pestilence
+2011,8,206,Pillshovellers,Phinatics
+2011,8,207,Pillshovellers,Team Colbert
+2011,8,208,Scalp Hunters,Pestilence
+2011,8,209,Scalp Hunters,Team Christman
+2011,8,210,Team Christman,Team Colbert
+2011,8,211,MC Gusto,* League Average
+2011,8,212,He Hate Me,* League Average
+2011,8,213,GoodFellas,* League Average
+2011,8,214,Brees Nuts,* League Average
+2011,8,215,Crackers,* League Average
+2011,8,216,Pillshovellers,* League Average
+2011,8,217,Scalp Hunters,* League Average
+2011,8,218,Team Christman,* League Average
+2011,8,219,Team Colbert,* League Average
+2011,8,220,Pestilence,* League Average
+2011,8,221,Phinatics,* League Average
+2011,8,222,Team Thompson,* League Average
+2011,8,223,Ghost of Derrick Thomas,* League Average
+2011,8,224,THE Great Chewbaccas,* League Average
+2011,9,225,THE Great Chewbaccas,GoodFellas
+2011,9,226,THE Great Chewbaccas,Brees Nuts
+2011,9,227,Brees Nuts,He Hate Me
+2011,9,228,Crackers,GoodFellas
+2011,9,229,Crackers,MC Gusto
+2011,9,230,Pillshovellers,He Hate Me
+2011,9,231,Pillshovellers,Ghost of Derrick Thomas
+2011,9,232,Scalp Hunters,MC Gusto
+2011,9,233,Scalp Hunters,Team Thompson
+2011,9,234,Team Christman,Ghost of Derrick Thomas
+2011,9,235,Team Christman,Phinatics
+2011,9,236,Team Colbert,Team Thompson
+2011,9,237,Team Colbert,Pestilence
+2011,9,238,Pestilence,Phinatics
+2011,9,239,MC Gusto,* League Average
+2011,9,240,He Hate Me,* League Average
+2011,9,241,GoodFellas,* League Average
+2011,9,242,Brees Nuts,* League Average
+2011,9,243,Crackers,* League Average
+2011,9,244,Pillshovellers,* League Average
+2011,9,245,Scalp Hunters,* League Average
+2011,9,246,Team Christman,* League Average
+2011,9,247,Team Colbert,* League Average
+2011,9,248,Pestilence,* League Average
+2011,9,249,Phinatics,* League Average
+2011,9,250,Team Thompson,* League Average
+2011,9,251,Ghost of Derrick Thomas,* League Average
+2011,9,252,THE Great Chewbaccas,* League Average
+2011,10,253,THE Great Chewbaccas,Crackers
+2011,10,254,THE Great Chewbaccas,Pillshovellers
+2011,10,255,Pillshovellers,Brees Nuts
+2011,10,256,Scalp Hunters,Crackers
+2011,10,257,Scalp Hunters,GoodFellas
+2011,10,258,Team Christman,Brees Nuts
+2011,10,259,Team Christman,He Hate Me
+2011,10,260,Team Colbert,GoodFellas
+2011,10,261,Team Colbert,MC Gusto
+2011,10,262,Pestilence,He Hate Me
+2011,10,263,Pestilence,Ghost of Derrick Thomas
+2011,10,264,Phinatics,MC Gusto
+2011,10,265,Phinatics,Team Thompson
+2011,10,266,Team Thompson,Ghost of Derrick Thomas
+2011,10,267,MC Gusto,* League Average
+2011,10,268,He Hate Me,* League Average
+2011,10,269,GoodFellas,* League Average
+2011,10,270,Brees Nuts,* League Average
+2011,10,271,Crackers,* League Average
+2011,10,272,Pillshovellers,* League Average
+2011,10,273,Scalp Hunters,* League Average
+2011,10,274,Team Christman,* League Average
+2011,10,275,Team Colbert,* League Average
+2011,10,276,Pestilence,* League Average
+2011,10,277,Phinatics,* League Average
+2011,10,278,Team Thompson,* League Average
+2011,10,279,Ghost of Derrick Thomas,* League Average
+2011,10,280,THE Great Chewbaccas,* League Average
+2011,11,281,THE Great Chewbaccas,Scalp Hunters
+2011,11,282,THE Great Chewbaccas,Team Christman
+2011,11,283,Team Christman,Pillshovellers
+2011,11,284,Team Colbert,Scalp Hunters
+2011,11,285,Team Colbert,Crackers
+2011,11,286,Pestilence,Pillshovellers
+2011,11,287,Pestilence,Brees Nuts
+2011,11,288,Phinatics,Crackers
+2011,11,289,Phinatics,GoodFellas
+2011,11,290,Team Thompson,Brees Nuts
+2011,11,291,Team Thompson,He Hate Me
+2011,11,292,Ghost of Derrick Thomas,GoodFellas
+2011,11,293,Ghost of Derrick Thomas,MC Gusto
+2011,11,294,MC Gusto,He Hate Me
+2011,11,295,MC Gusto,* League Average
+2011,11,296,He Hate Me,* League Average
+2011,11,297,GoodFellas,* League Average
+2011,11,298,Brees Nuts,* League Average
+2011,11,299,Crackers,* League Average
+2011,11,300,Pillshovellers,* League Average
+2011,11,301,Scalp Hunters,* League Average
+2011,11,302,Team Christman,* League Average
+2011,11,303,Team Colbert,* League Average
+2011,11,304,Pestilence,* League Average
+2011,11,305,Phinatics,* League Average
+2011,11,306,Team Thompson,* League Average
+2011,11,307,Ghost of Derrick Thomas,* League Average
+2011,11,308,THE Great Chewbaccas,* League Average
+2011,12,309,THE Great Chewbaccas,Team Colbert
+2011,12,310,THE Great Chewbaccas,Pestilence
+2011,12,311,Pestilence,Team Christman
+2011,12,312,Phinatics,Team Colbert
+2011,12,313,Phinatics,Scalp Hunters
+2011,12,314,Team Thompson,Team Christman
+2011,12,315,Team Thompson,Pillshovellers
+2011,12,316,Ghost of Derrick Thomas,Scalp Hunters
+2011,12,317,Ghost of Derrick Thomas,Crackers
+2011,12,318,MC Gusto,Pillshovellers
+2011,12,319,MC Gusto,Brees Nuts
+2011,12,320,He Hate Me,Crackers
+2011,12,321,He Hate Me,GoodFellas
+2011,12,322,GoodFellas,Brees Nuts
+2011,12,323,MC Gusto,* League Average
+2011,12,324,He Hate Me,* League Average
+2011,12,325,GoodFellas,* League Average
+2011,12,326,Brees Nuts,* League Average
+2011,12,327,Crackers,* League Average
+2011,12,328,Pillshovellers,* League Average
+2011,12,329,Scalp Hunters,* League Average
+2011,12,330,Team Christman,* League Average
+2011,12,331,Team Colbert,* League Average
+2011,12,332,Pestilence,* League Average
+2011,12,333,Phinatics,* League Average
+2011,12,334,Team Thompson,* League Average
+2011,12,335,Ghost of Derrick Thomas,* League Average
+2011,12,336,THE Great Chewbaccas,* League Average
+2011,13,337,THE Great Chewbaccas,Phinatics
+2011,13,338,THE Great Chewbaccas,Team Thompson
+2011,13,339,Team Thompson,Pestilence
+2011,13,340,Ghost of Derrick Thomas,Phinatics
+2011,13,341,Ghost of Derrick Thomas,Team Colbert
+2011,13,342,MC Gusto,Pestilence
+2011,13,343,MC Gusto,Team Christman
+2011,13,344,He Hate Me,Team Colbert
+2011,13,345,He Hate Me,Scalp Hunters
+2011,13,346,GoodFellas,Team Christman
+2011,13,347,GoodFellas,Pillshovellers
+2011,13,348,Brees Nuts,Scalp Hunters
+2011,13,349,Brees Nuts,Crackers
+2011,13,350,Crackers,Pillshovellers
+2011,13,351,MC Gusto,* League Average
+2011,13,352,He Hate Me,* League Average
+2011,13,353,GoodFellas,* League Average
+2011,13,354,Brees Nuts,* League Average
+2011,13,355,Crackers,* League Average
+2011,13,356,Pillshovellers,* League Average
+2011,13,357,Scalp Hunters,* League Average
+2011,13,358,Team Christman,* League Average
+2011,13,359,Team Colbert,* League Average
+2011,13,360,Pestilence,* League Average
+2011,13,361,Phinatics,* League Average
+2011,13,362,Team Thompson,* League Average
+2011,13,363,Ghost of Derrick Thomas,* League Average
+2011,13,364,THE Great Chewbaccas,* League Average
+2011,14,365,Pestilence,THE Great Chewbaccas
+2011,14,366,Scalp Hunters,Brees Nuts
+2011,14,367,MC Gusto,Pillshovellers
+2011,14,368,GoodFellas,Team Thompson
+2011,14,369,Phinatics,Ghost of Derrick Thomas
+2011,14,370,Team Christman,Team Colbert
+2011,15,371,Pestilence,He Hate Me
+2011,15,372,Scalp Hunters,Crackers
+2011,15,373,Team Christman,Pillshovellers
+2011,15,374,Ghost of Derrick Thomas,Team Thompson
+2011,16,375,Pestilence,Crackers
+2011,16,376,Ghost of Derrick Thomas,Pillshovellers
+2011,16,377,Scalp Hunters,He Hate Me
+2011,17,378,Pestilence,Crackers
+2011,17,379,Ghost of Derrick Thomas,Pillshovellers
+2011,17,380,Scalp Hunters,He Hate Me
