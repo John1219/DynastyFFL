@@ -132,60 +132,86 @@
             return html;
         }
 
+        function renderTeamRoster(team) {
+            return fetch('../data/81689-rosters-nfl-1.csv')
+                .then(r => r.text())
+                .then(csvText => {
+                    return new Promise(resolve => {
+                        Papa.parse(csvText, {
+                            header: false,
+                            skipEmptyLines: true,
+                            complete: function(results) {
+                                const data = results.data.filter(row =>
+                                    row[0] && !row[0].startsWith('//') && row[0] !== 'Team'
+                                );
+                                const headers = ["Team", "Player", "Position", "NFL Team", "Status"];
+                                // Filter for this team name
+                                const filtered = data.filter(row => String(row[0]) === String(team[2]));
+                                let html = '<table class="history-table"><thead><tr>';
+                                headers.forEach(h => html += `<th>${h}</th>`);
+                                html += '</tr></thead><tbody>';
+                                filtered.forEach(row => {
+                                    html += '<tr>';
+                                    row.forEach(cell => html += `<td>${cell}</td>`);
+                                    html += '</tr>';
+                                });
+                                html += '</tbody></table>';
+                                // If no players, show message
+                                if (filtered.length === 0) {
+                                    html += '<div style="margin:1em 0;">No roster data found for this team.</div>';
+                                }
+                                resolve(html);
+                            }
+                        });
+                    });
+                });
+        }
+
         function renderTeamHistory(team, owners, nameHistory, schedule) {
             let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
-            html += `<div class="team-history-card" style="max-width:500px;margin:2em auto 2em auto;padding:2em 2em 1em 2em;background:linear-gradient(135deg,#e3e8ee 0%,#f6f8fa 100%);border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,0.07);position:relative;">`;
-            html += `<div class="team-number">${team[1]}</div>`;
-            html += `<div class="team-history-content" style="display:flex;flex-direction:column;align-items:center;">`;
-            if (team[3]) {
-                html += `<div class="team-logo-wrap" style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:50%;margin-bottom:1em;box-shadow:0 2px 8px rgba(0,188,212,0.07);">
-                    <img class="team-logo" src="${team[3]}" alt="${team[2]} logo" style="width:70px;height:70px;object-fit:contain;border-radius:50%;background:#f6f8fa;" onerror="this.style.display='none'">
-                </div>`;
-            }
-            html += `<h2 class="team-name" style="margin:0.5em 0 0.5em 0;font-size:1.15em;font-weight:700;color:#222;text-align:center;letter-spacing:0.5px;">${team[2]}</h2>`;
+            html += `
+            <div class="team-history-card">
+                <div class="team-number">${team[1]}</div>
+                <div class="team-history-content">
+                    ${team[3] ? `<div class="team-logo-wrap"><img class="team-logo" src="${team[3]}" alt="${team[2]} logo" onerror="this.style.display='none'"></div>` : ''}
+                    <h2 class="team-name">${team[2]}</h2>
+                    <div class="team-owner"><span class="owner-label">Owner:</span> <span class="owner-name">${owners.length > 0 ? owners.slice().sort((a, b) => b.year - a.year)[0].owner : ''}</span></div>
+                    ${nameHistory.length > 1 ? `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">${nameHistory.map(entry => `<li>${entry.year}: ${entry.name}</li>`).join('')}</ul></div>` : ''}
+                    <div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">${
+                        owners.length > 0
+                            ? owners.slice().sort((a, b) => b.year - a.year).map((o, i, arr) => {
+                                const startYear = o.year;
+                                let endYear;
+                                if (i > 0) endYear = arr[i - 1].year;
+                                else endYear = (o.owner === owners.slice().sort((a, b) => b.year - a.year)[0].owner) ? "Present" : "";
+                                return `<li>${o.owner}: ${startYear} - ${endYear}</li>`;
+                            }).join('')
+                            : '<li>No owner data</li>'
+                    }</ul></div>
+                </div>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-schedule-btn">Schedule</button>
+                <button class="tab-btn" id="tab-roster-btn">Roster</button>
+            </div>
+            <div id="tab-content">
+                <div id="team-schedule-container"></div>
+                <div id="team-roster-container" style="display:none;"></div>
+            </div>
+            `;
 
-            const currentOwner = owners.length > 0
-                ? owners.slice().sort((a, b) => b.year - a.year)[0].owner
-                : '';
-            html += `<div class="team-owner" style="margin-top:0.5em;font-size:1em;color:#333;text-align:center;background:#e0f7fa;border-radius:6px;padding:0.4em 0.8em;display:inline-block;">
-                        <span class="owner-label" style="font-weight:500;color:#0097a7;margin-right:0.3em;">Owner:</span>
-                        <span class="owner-name" style="font-weight:700;color:#222;">${currentOwner}</span>
-                    </div>`;
+            document.getElementById('history-container').innerHTML = html;
 
-            // Team Name History
-            if (nameHistory.length > 1) {
-                html += `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
-                nameHistory.forEach(entry => {
-                    html += `<li>${entry.year}: ${entry.name}</li>`;
-                });
-                html += `</ul></div>`;
-            }
+            // Tab logic
+            const scheduleTabBtn = document.getElementById('tab-schedule-btn');
+            const rosterTabBtn = document.getElementById('tab-roster-btn');
+            const scheduleContainer = document.getElementById('team-schedule-container');
+            const rosterContainer = document.getElementById('team-roster-container');
 
-            // Owner History
-            html += `<div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
-            if (owners.length > 0) {
-                owners = owners.slice().sort((a, b) => b.year - a.year);
-                for (let i = 0; i < owners.length; i++) {
-                    const startYear = owners[i].year;
-                    let endYear;
-                    if (i > 0) {
-                        endYear = owners[i - 1].year;
-                    } else {
-                        endYear = (owners[i].owner === currentOwner) ? "Present" : "";
-                    }
-                    html += `<li>${owners[i].owner}: ${startYear} - ${endYear}</li>`;
-                }
-            } else {
-                html += `<li>No owner data</li>`;
-            }
-            html += `</ul></div>`;
-
-            html += `</div>`; // .team-history-content
-
-            // Team Schedule with filters
+            // Render schedule table with filters
             let filterYear = '', filterWeek = '', filterOpponent = '';
             function renderScheduleTable() {
-                document.getElementById('team-schedule-container').innerHTML =
+                scheduleContainer.innerHTML =
                     renderTeamSchedule(schedule, nameHistory.map(n => n.name), filterWeek, filterYear, filterOpponent);
                 setTimeout(() => {
                     const yearSel = document.getElementById('filter-year');
@@ -204,10 +230,25 @@
                     };
                 }, 0);
             }
-
-            html += `<div id="team-schedule-container"></div>`;
-            document.getElementById('history-container').innerHTML = html;
             renderScheduleTable();
+
+            // Tab switching
+            scheduleTabBtn.onclick = function() {
+                scheduleTabBtn.classList.add('active');
+                rosterTabBtn.classList.remove('active');
+                scheduleContainer.style.display = '';
+                rosterContainer.style.display = 'none';
+            };
+            rosterTabBtn.onclick = function() {
+                scheduleTabBtn.classList.remove('active');
+                rosterTabBtn.classList.add('active');
+                scheduleContainer.style.display = 'none';
+                rosterContainer.style.display = '';
+                // Always reload roster tab for up-to-date data
+                renderTeamRoster(team).then(html => {
+                    rosterContainer.innerHTML = html;
+                });
+            };
         }
 
         // Load all CSVs and render
