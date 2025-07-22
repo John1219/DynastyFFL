@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynasty FFL Auction Draft Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1 { color: #2c3e50; }
+        nav { margin-bottom: 2em; }
+        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
+        nav a:hover { text-decoration: underline; }
+        .filters { margin-bottom: 1em; }
+        .filters label { margin-right: 1em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background: #f2f2f2; }
+        tr:nth-child(even) { background: #fafafa; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>Dynasty FFL Auction Draft Results</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="teams.html">Teams</a>
+        <a href="auction-draft.html">Auction Draft</a>
+    </nav>
+    <div class="section">
+        <div class="filters">
+            <label>
+                Team:
+                <select id="filter-team"><option value="">All</option></select>
+            </label>
+            <label>
+                Player:
+                <input type="text" id="filter-player" placeholder="Search player...">
+            </label>
+            <button id="clear-filters">Clear</button>
+        </div>
+        <div id="draft-table">Loading...</div>
+    </div>
+    <script>
+        const csvPath = '../data/Dynasty Auction Draft Results - Draft Results.csv';
+        let allData = [];
+        let headers = [];
+
+        function renderTable(data) {
+            let html = '<table><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            data.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('draft-table').innerHTML = html;
+        }
+
+        function populateDropdowns(data) {
+            // Try to find the Team column index
+            const teamIdx = headers.findIndex(h => /team/i.test(h));
+            const teams = new Set();
+            data.forEach(row => {
+                if (teamIdx >= 0 && row[teamIdx]) teams.add(row[teamIdx]);
+            });
+            const teamSel = document.getElementById('filter-team');
+            while (teamSel.options.length > 1) teamSel.remove(1);
+            Array.from(teams).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                teamSel.appendChild(option);
+            });
+        }
+
+        function filterData() {
+            const team = document.getElementById('filter-team').value.toLowerCase();
+            const player = document.getElementById('filter-player').value.toLowerCase();
+            // Try to find the Team and Player column indexes
+            const teamIdx = headers.findIndex(h => /team/i.test(h));
+            const playerIdx = headers.findIndex(h => /player/i.test(h));
+            const filtered = allData.filter(row => {
+                const teamMatch = !team || (teamIdx >= 0 && row[teamIdx].toLowerCase() === team);
+                const playerMatch = !player || (playerIdx >= 0 && row[playerIdx].toLowerCase().includes(player));
+                return teamMatch && playerMatch;
+            });
+            renderTable(filtered);
+        }
+
+        fetch(csvPath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        // Assign headers from the first row
+                        headers = results.data[0];
+                        // Remove header and commented lines from data
+                        allData = results.data.slice(1).filter(row =>
+                            row[0] && !row[0].startsWith('//')
+                        );
+                        populateDropdowns(allData);
+                        renderTable(allData);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('draft-table').innerText = 'Failed to load draft results.';
+            });
+
+        document.getElementById('filter-team').addEventListener('change', filterData);
+        document.getElementById('filter-player').addEventListener('input', filterData);
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.getElementById('filter-team').value = '';
+            document.getElementById('filter-player').value = '';
+            renderTable(allData);
+        });
+    </script>
+</body>
+</html>
