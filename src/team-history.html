@@ -146,21 +146,100 @@
                                 );
                                 const headers = ["Team", "Player", "Position", "NFL Team", "Status"];
                                 // Filter for this team name
-                                const filtered = data.filter(row => String(row[0]) === String(team[2]));
-                                let html = '<table class="history-table"><thead><tr>';
+                                const filtered = data.filter(row => row[0].trim().toLowerCase() === team[2].trim().toLowerCase());
+
+                                // Gather filter options
+                                const positions = new Set();
+                                const nflTeams = new Set();
+                                const statuses = new Set();
+                                filtered.forEach(row => {
+                                    positions.add(row[2]);
+                                    nflTeams.add(row[3]);
+                                    statuses.add(row[4]);
+                                });
+
+                                // Get current filter values from the DOM
+                                const positionFilter = document.getElementById('filter-roster-position')?.value || '';
+                                const nflTeamFilter = document.getElementById('filter-roster-nflteam')?.value || '';
+                                const statusFilter = document.getElementById('filter-roster-status')?.value || '';
+
+                                // Apply filters
+                                const finalRows = filtered.filter(row => {
+                                    return (!positionFilter || row[2] === positionFilter)
+                                        && (!nflTeamFilter || row[3] === nflTeamFilter)
+                                        && (!statusFilter || row[4] === statusFilter);
+                                });
+
+                                let html = `
+                                <div class="filters" style="margin-bottom:1em;">
+                                    <label>Position:
+                                        <select id="filter-roster-position">
+                                            <option value="">All</option>
+                                            ${Array.from(positions).sort().map(p => `<option value="${p}">${p}</option>`).join('')}
+                                        </select>
+                                    </label>
+                                    <label>NFL Team:
+                                        <select id="filter-roster-nflteam">
+                                            <option value="">All</option>
+                                            ${Array.from(nflTeams).sort().map(t => `<option value="${t}">${t}</option>`).join('')}
+                                        </select>
+                                    </label>
+                                    <label>Status:
+                                        <select id="filter-roster-status">
+                                            <option value="">All</option>
+                                            ${Array.from(statuses).sort().map(s => `<option value="${s}">${s}</option>`).join('')}
+                                        </select>
+                                    </label>
+                                    <button id="clear-roster-filters" type="button">Clear</button>
+                                </div>
+                                <table class="history-table"><thead><tr>`;
                                 headers.forEach(h => html += `<th>${h}</th>`);
                                 html += '</tr></thead><tbody>';
-                                filtered.forEach(row => {
+                                finalRows.forEach(row => {
                                     html += '<tr>';
                                     row.forEach(cell => html += `<td>${cell}</td>`);
                                     html += '</tr>';
                                 });
                                 html += '</tbody></table>';
-                                // If no players, show message
-                                if (filtered.length === 0) {
+                                if (finalRows.length === 0) {
                                     html += '<div style="margin:1em 0;">No roster data found for this team.</div>';
                                 }
                                 resolve(html);
+
+                                // Add filter event listeners after rendering
+                                setTimeout(() => {
+                                    const posSel = document.getElementById('filter-roster-position');
+                                    const nflSel = document.getElementById('filter-roster-nflteam');
+                                    const statSel = document.getElementById('filter-roster-status');
+                                    const clearBtn = document.getElementById('clear-roster-filters');
+                                    if (posSel) posSel.onchange = function() { rerenderRoster(); };
+                                    if (nflSel) nflSel.onchange = function() { rerenderRoster(); };
+                                    if (statSel) statSel.onchange = function() { rerenderRoster(); };
+                                    if (clearBtn) clearBtn.onclick = function() {
+                                        if (posSel) posSel.value = '';
+                                        if (nflSel) nflSel.value = '';
+                                        if (statSel) statSel.value = '';
+                                        rerenderRoster();
+                                    };
+                                    function rerenderRoster() {
+                                        // Store current filter values
+                                        const positionFilter = document.getElementById('filter-roster-position')?.value || '';
+                                        const nflTeamFilter = document.getElementById('filter-roster-nflteam')?.value || '';
+                                        const statusFilter = document.getElementById('filter-roster-status')?.value || '';
+
+                                        renderTeamRoster(team).then(html => {
+                                            document.getElementById('team-roster-container').innerHTML = html;
+
+                                            // Restore filter values after re-render
+                                            const posSel = document.getElementById('filter-roster-position');
+                                            const nflSel = document.getElementById('filter-roster-nflteam');
+                                            const statSel = document.getElementById('filter-roster-status');
+                                            if (posSel) posSel.value = positionFilter;
+                                            if (nflSel) nflSel.value = nflTeamFilter;
+                                            if (statSel) statSel.value = statusFilter;
+                                        });
+                                    }
+                                }, 0);
                             }
                         });
                     });
@@ -170,35 +249,35 @@
         function renderTeamHistory(team, owners, nameHistory, schedule) {
             let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
             html += `
-            <div class="team-history-card">
-                <div class="team-number">${team[1]}</div>
-                <div class="team-history-content">
-                    ${team[3] ? `<div class="team-logo-wrap"><img class="team-logo" src="${team[3]}" alt="${team[2]} logo" onerror="this.style.display='none'"></div>` : ''}
-                    <h2 class="team-name">${team[2]}</h2>
-                    <div class="team-owner"><span class="owner-label">Owner:</span> <span class="owner-name">${owners.length > 0 ? owners.slice().sort((a, b) => b.year - a.year)[0].owner : ''}</span></div>
-                    ${nameHistory.length > 1 ? `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">${nameHistory.map(entry => `<li>${entry.year}: ${entry.name}</li>`).join('')}</ul></div>` : ''}
-                    <div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">${
-                        owners.length > 0
-                            ? owners.slice().sort((a, b) => b.year - a.year).map((o, i, arr) => {
-                                const startYear = o.year;
-                                let endYear;
-                                if (i > 0) endYear = arr[i - 1].year;
-                                else endYear = (o.owner === owners.slice().sort((a, b) => b.year - a.year)[0].owner) ? "Present" : "";
-                                return `<li>${o.owner}: ${startYear} - ${endYear}</li>`;
-                            }).join('')
-                            : '<li>No owner data</li>'
-                    }</ul></div>
-                </div>
-            </div>
-            <div class="tabs">
-                <button class="tab-btn active" id="tab-schedule-btn">Schedule</button>
-                <button class="tab-btn" id="tab-roster-btn">Roster</button>
-            </div>
-            <div id="tab-content">
-                <div id="team-schedule-container"></div>
-                <div id="team-roster-container" style="display:none;"></div>
-            </div>
-            `;
+<div class="team-history-card">
+    <div class="team-number">${team[1]}</div>
+    <div class="team-history-content">
+        ${team[3] ? `<div class="team-logo-wrap"><img class="team-logo" src="${team[3]}" alt="${team[2]} logo" onerror="this.style.display='none'"></div>` : ''}
+        <h2 class="team-name">${team[2]}</h2>
+        <div class="team-owner"><span class="owner-label">Owner:</span> <span class="owner-name">${owners.length > 0 ? owners.slice().sort((a, b) => b.year - a.year)[0].owner : ''}</span></div>
+        ${nameHistory.length > 1 ? `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">${nameHistory.map(entry => `<li>${entry.year}: ${entry.name}</li>`).join('')}</ul></div>` : ''}
+        <div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">${
+            owners.length > 0
+                ? owners.slice().sort((a, b) => b.year - a.year).map((o, i, arr) => {
+                    const startYear = o.year;
+                    let endYear;
+                    if (i > 0) endYear = arr[i - 1].year;
+                    else endYear = (o.owner === owners.slice().sort((a, b) => b.year - a.year)[0].owner) ? "Present" : "";
+                    return `<li>${o.owner}: ${startYear} - ${endYear}</li>`;
+                }).join('')
+                : '<li>No owner data</li>'
+        }</ul></div>
+    </div>
+</div>
+<div class="tabs">
+    <button class="tab-btn active" id="tab-schedule-btn">Schedule</button>
+    <button class="tab-btn" id="tab-roster-btn">Roster</button>
+</div>
+<div id="tab-content">
+    <div id="team-schedule-container"></div>
+    <div id="team-roster-container" style="display:none;"></div>
+</div>
+`;
 
             document.getElementById('history-container').innerHTML = html;
 
@@ -244,7 +323,6 @@
                 rosterTabBtn.classList.add('active');
                 scheduleContainer.style.display = 'none';
                 rosterContainer.style.display = '';
-                // Always reload roster tab for up-to-date data
                 renderTeamRoster(team).then(html => {
                     rosterContainer.innerHTML = html;
                 });
