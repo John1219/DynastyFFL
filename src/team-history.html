@@ -246,6 +246,99 @@
                 });
         }
 
+        function renderAuctionDraftResults(nameHistory) {
+            // Store current filter values before rendering
+            const pickFilter = document.getElementById('filter-auction-pick')?.value || '';
+            const teamFilter = document.getElementById('filter-auction-team')?.value || '';
+            const positionFilter = document.getElementById('filter-auction-position')?.value || '';
+
+            // Get the original team name (first year, likely 2011)
+            const originalName = nameHistory.length > 0
+                ? nameHistory[nameHistory.length - 1].name.trim().toLowerCase()
+                : '';
+
+            return fetch('../data/Dynasty Auction Draft Results - Draft Results.csv')
+                .then(r => r.text())
+                .then(csvText => {
+                    return new Promise(resolve => {
+                        Papa.parse(csvText, {
+                            header: false,
+                            skipEmptyLines: true,
+                            complete: function(results) {
+                                const rows = results.data.filter(row =>
+                                    row[0] && !row[0].startsWith('//')
+                                );
+                                const headers = rows[0];
+                                const data = rows.slice(1);
+
+                                // Gather filter options
+                                const pickNumbers = new Set();
+                                const teams = new Set();
+                                const positions = new Set();
+                                data.forEach(row => {
+                                    pickNumbers.add(row[0]);
+                                    positions.add(row[2]);
+                                    teams.add(row[3]);
+                                });
+
+                                // Auto-filter by original team name (column 3)
+                                let filteredRows = data.filter(row =>
+                                    row[3] && row[3].trim().toLowerCase() === originalName
+                                );
+
+                                // Apply additional filters
+                                filteredRows = filteredRows.filter(row => {
+                                    return (!pickFilter || row[0] === pickFilter)
+                                        && (!teamFilter || row[3] === teamFilter)
+                                        && (!positionFilter || row[2] === positionFilter);
+                                });
+
+                                let html = `
+                                <div class="filters" style="margin-bottom:1em;">
+                                    <label>Position:
+                                        <select id="filter-auction-position">
+                                            <option value="">All</option>
+                                            ${Array.from(positions).sort().map(pos => `<option value="${pos}">${pos}</option>`).join('')}
+                                        </select>
+                                    </label>
+                                    <button id="clear-auction-filters" type="button">Clear</button>
+                                </div>
+                                <table class="history-table"><thead><tr>`;
+                                headers.forEach(h => html += `<th>${h}</th>`);
+                                html += '</tr></thead><tbody>';
+                                filteredRows.forEach(row => {
+                                    html += '<tr>';
+                                    row.forEach(cell => html += `<td>${cell}</td>`);
+                                    html += '</tr>';
+                                });
+                                html += '</tbody></table>';
+                                if (filteredRows.length === 0) {
+                                    html += '<div style="margin:1em 0;">No auction draft results found for this team.</div>';
+                                }
+                                resolve(html);
+
+                                // Add filter event listeners after rendering
+                                setTimeout(() => {
+                                    const posSel = document.getElementById('filter-auction-position');
+                                    const clearBtn = document.getElementById('clear-auction-filters');
+                                    if (posSel) posSel.value = positionFilter;
+                                    if (posSel) posSel.onchange = rerenderAuction;
+                                    if (clearBtn) clearBtn.onclick = function() {
+                                        if (posSel) posSel.value = '';
+                                        rerenderAuction();
+                                    };
+                                    function rerenderAuction() {
+                                        renderAuctionDraftResults(nameHistory).then(html => {
+                                            document.getElementById('team-auction-container').innerHTML = html;
+                                        });
+                                    }
+                                }, 0);
+                            }
+                        });
+                    });
+                });
+        }
+
         function renderTeamHistory(team, owners, nameHistory, schedule) {
             let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
             html += `
@@ -272,10 +365,12 @@
 <div class="tabs">
     <button class="tab-btn active" id="tab-schedule-btn">Schedule</button>
     <button class="tab-btn" id="tab-roster-btn">Roster</button>
+    <button class="tab-btn" id="tab-auction-btn">Auction Draft Results</button>
 </div>
 <div id="tab-content">
     <div id="team-schedule-container"></div>
     <div id="team-roster-container" style="display:none;"></div>
+    <div id="team-auction-container" style="display:none;"></div>
 </div>
 `;
 
@@ -284,8 +379,10 @@
             // Tab logic
             const scheduleTabBtn = document.getElementById('tab-schedule-btn');
             const rosterTabBtn = document.getElementById('tab-roster-btn');
+            const auctionTabBtn = document.getElementById('tab-auction-btn');
             const scheduleContainer = document.getElementById('team-schedule-container');
             const rosterContainer = document.getElementById('team-roster-container');
+            const auctionContainer = document.getElementById('team-auction-container');
 
             // Render schedule table with filters
             let filterYear = '', filterWeek = '', filterOpponent = '';
@@ -315,16 +412,31 @@
             scheduleTabBtn.onclick = function() {
                 scheduleTabBtn.classList.add('active');
                 rosterTabBtn.classList.remove('active');
+                auctionTabBtn.classList.remove('active');
                 scheduleContainer.style.display = '';
                 rosterContainer.style.display = 'none';
+                auctionContainer.style.display = 'none';
             };
             rosterTabBtn.onclick = function() {
                 scheduleTabBtn.classList.remove('active');
                 rosterTabBtn.classList.add('active');
+                auctionTabBtn.classList.remove('active');
                 scheduleContainer.style.display = 'none';
                 rosterContainer.style.display = '';
+                auctionContainer.style.display = 'none';
                 renderTeamRoster(team).then(html => {
                     rosterContainer.innerHTML = html;
+                });
+            };
+            auctionTabBtn.onclick = function() {
+                scheduleTabBtn.classList.remove('active');
+                rosterTabBtn.classList.remove('active');
+                auctionTabBtn.classList.add('active');
+                scheduleContainer.style.display = 'none';
+                rosterContainer.style.display = 'none';
+                auctionContainer.style.display = '';
+                renderAuctionDraftResults(nameHistory).then(html => {
+                    auctionContainer.innerHTML = html;
                 });
             };
         }
