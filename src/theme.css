@@ -1,0 +1,241 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f6f8fa;
+    margin: 0;
+    padding: 0;
+}
+h1, h2 {
+    color: #222;
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    text-align: center;
+    letter-spacing: 1px;
+}
+nav {
+    background: #222;
+    padding: 1em 0.5em;
+    margin-bottom: 2em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    justify-content: center;
+}
+nav a {
+    margin: 0 1em;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.05em;
+    transition: color 0.2s;
+}
+nav a:hover {
+    color: #00bcd4;
+}
+.section {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    padding: 2em 2em 1em 2em;
+}
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    align-items: center;
+    margin-bottom: 1.5em;
+}
+.filters label {
+    font-weight: 500;
+    color: #333;
+}
+.filters select,
+.filters input {
+    padding: 0.5em 0.8em;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f6f8fa;
+    transition: border-color 0.2s;
+}
+.filters select:focus,
+.filters input:focus {
+    border-color: #00bcd4;
+    outline: none;
+}
+#clear-filters {
+    background: #00bcd4;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#clear-filters:hover {
+    background: #0097a7;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1em;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+th, td {
+    border: none;
+    padding: 10px 12px;
+    text-align: left;
+}
+th {
+    background: #e3e8ee;
+    color: #222;
+    font-weight: 700;
+    font-size: 1em;
+}
+tr:nth-child(even) {
+    background: #f6f8fa;
+}
+tr:hover {
+    background: #e0f7fa;
+}
+.team-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2em;
+    padding: 1em 0;
+}
+.team-card {
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e3e8ee 0%, #f6f8fa 100%);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    padding: 2em 1.5em 1.5em 1.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
+    min-width: 0;
+}
+.team-card:hover {
+    box-shadow: 0 8px 32px rgba(0,188,212,0.12);
+    transform: translateY(-4px) scale(1.03);
+}
+.team-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.team-number {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 0.7em;
+    color: #00bcd4;
+    font-weight: bold;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,188,212,0.08);
+    z-index: 2;
+}
+.team-logo-wrap {
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    margin-bottom: 1em;
+    box-shadow: 0 2px 8px rgba(0,188,212,0.07);
+}
+.team-card img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #f6f8fa;
+}
+.team-name {
+    margin: 0.5em 0 0.5em 0;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+.team-owner {
+    margin-top: 0.5em;
+    font-size: 1em;
+    color: #333;
+    text-align: center;
+    background: #e0f7fa;
+    border-radius: 6px;
+    padding: 0.4em 0.8em;
+    display: inline-block;
+}
+.owner-label {
+    font-weight: 500;
+    color: #0097a7;
+    margin-right: 0.3em;
+}
+.owner-name {
+    font-weight: 700;
+    color: #222;
+}
+/* Add these styles for team history card */
+.team-history-card {
+    max-width: 500px;
+    margin: 2em auto 2em auto;
+    padding: 2em 2em 1em 2em;
+    background: linear-gradient(135deg,#e3e8ee 0%,#f6f8fa 100%);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    position: relative;
+}
+.team-history-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.team-history-card .team-number {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 0.7em;
+    color: #00bcd4;
+    font-weight: bold;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,188,212,0.08);
+    z-index: 2;
+}
+@media (max-width: 900px) {
+    .section { padding: 1em; }
+    th, td { padding: 8px 6px; }
+}
+@media (max-width: 600px) {
+    .filters { flex-direction: column; align-items: stretch; }
+    .section { padding: 0.5em; }
+    table, thead, tbody, th, td, tr { display: block; }
+    th, td { padding: 8px 4px; }
+    th { background: #e3e8ee; }
+    tr { margin-bottom: 1em; }
+    .team-list {
+        grid-template-columns: 1fr;
+        gap: 1em;
+    }
+    .team-card {
+        padding: 1em;
+    }
+}

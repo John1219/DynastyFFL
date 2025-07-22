@@ -4,30 +4,19 @@
     <meta charset="UTF-8">
     <title>Dynasty FFL Team History</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1, h2 { color: #2c3e50; }
-        nav { margin-bottom: 2em; }
-        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
-        nav a:hover { text-decoration: underline; }
-        .history-table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
-        .history-table th, .history-table td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
-        .history-table th { background: #f2f2f2; }
-        .team-section { margin-bottom: 2em; }
-        .team-name { font-size: 1.2em; font-weight: bold; margin-bottom: 0.2em; }
-        .team-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5em; }
-        .back-link { margin-bottom: 1em; display: inline-block; }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <h1>Dynasty FFL Team History</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="teams.html">Teams</a>
-    </nav>
-    <div id="history-container">Loading...</div>
+    <div id="menu-bar"></div>
     <script>
-        // Get team number from query string
+        fetch('menu.html')
+            .then(r => r.text())
+            .then(html => document.getElementById('menu-bar').outerHTML = html);
+    </script>
+    <div class="section" id="history-container">Loading...</div>
+    <script>
         function getTeamNumberFromQuery() {
             const params = new URLSearchParams(window.location.search);
             return params.get('team');
@@ -37,9 +26,7 @@
         const ownersCsvPath = '../data/Dynasty League Data - Owners.csv';
         const scheduleCsvPath = '../data/Dynasty League Data - Schedule.csv';
 
-        // Find the latest team info for a given team number
         function getLatestTeamInfo(teamsData, teamNum) {
-            // Filter for this team number, then pick the row with the highest year
             const filtered = teamsData.filter(row => row[1] === teamNum);
             if (filtered.length === 0) return null;
             return filtered.reduce((latest, row) => {
@@ -47,7 +34,6 @@
             }, filtered[0]);
         }
 
-        // Get all name changes for a team, sorted by year descending
         function getTeamNameHistory(teamsData, teamNum) {
             return teamsData
                 .filter(row => row[1] === teamNum)
@@ -55,16 +41,55 @@
                 .sort((a, b) => b.year - a.year);
         }
 
-        // Accepts an array of names
-        function renderTeamSchedule(schedule, teamNames) {
+        function renderTeamSchedule(schedule, teamNames, filterWeek = '', filterYear = '', filterOpponent = '') {
             if (!schedule.length) return '';
-            let html = `<div style="margin:1em 0;"><strong>Team Schedule:</strong><table class="history-table"><thead><tr><th>Year</th><th>Week</th><th>Opponent</th><th>Home/Away</th></tr></thead><tbody>`;
+            let html = `
+            <div class="filters" style="margin-bottom:1em;">
+                <label>Year:
+                    <select id="filter-year"><option value="">All</option></select>
+                </label>
+                <label>Week:
+                    <select id="filter-week"><option value="">All</option></select>
+                </label>
+                <label>Opponent:
+                    <select id="filter-opponent"><option value="">All</option></select>
+                </label>
+                <button id="clear-schedule-filters" type="button">Clear</button>
+            </div>
+            <div style="margin:1em 0;">
+            <strong>Team Schedule:</strong>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Week</th>
+                        <th>Opponent</th>
+                        <th>Home/Away</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            // Gather filter options
+            const years = new Set(), weeks = new Set(), opponents = new Set();
             schedule.forEach(game => {
-                // Check if this team played as home or away under any historic name
                 let isHome = teamNames.includes(game[3]);
                 let isAway = teamNames.includes(game[4]);
-                if (!isHome && !isAway) return; // skip if not this team
+                if (!isHome && !isAway) return;
+                years.add(game[0]);
+                weeks.add(game[1]);
+                opponents.add(isHome ? game[4] : game[3]);
+            });
+
+            // Filter schedule rows
+            schedule.forEach(game => {
+                let isHome = teamNames.includes(game[3]);
+                let isAway = teamNames.includes(game[4]);
+                if (!isHome && !isAway) return;
                 const opponent = isHome ? game[4] : game[3];
+                if (filterYear && game[0] !== filterYear) return;
+                if (filterWeek && game[1] !== filterWeek) return;
+                if (filterOpponent && opponent !== filterOpponent) return;
                 html += `<tr>
                     <td>${game[0]}</td>
                     <td>${game[1]}</td>
@@ -73,24 +98,61 @@
                 </tr>`;
             });
             html += `</tbody></table></div>`;
+
+            // Add filter options to selects after rendering
+            setTimeout(() => {
+                const yearSel = document.getElementById('filter-year');
+                const weekSel = document.getElementById('filter-week');
+                const oppSel = document.getElementById('filter-opponent');
+                if (yearSel && weekSel && oppSel) {
+                    [yearSel, weekSel, oppSel].forEach(sel => {
+                        while (sel.options.length > 1) sel.remove(1);
+                    });
+                    Array.from(years).sort().forEach(y => {
+                        const opt = document.createElement('option');
+                        opt.value = y;
+                        opt.textContent = y;
+                        yearSel.appendChild(opt);
+                    });
+                    Array.from(weeks).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(w => {
+                        const opt = document.createElement('option');
+                        opt.value = w;
+                        opt.textContent = w;
+                        weekSel.appendChild(opt);
+                    });
+                    Array.from(opponents).sort().forEach(o => {
+                        const opt = document.createElement('option');
+                        opt.value = o;
+                        opt.textContent = o;
+                        oppSel.appendChild(opt);
+                    });
+                }
+            }, 0);
+
             return html;
         }
 
         function renderTeamHistory(team, owners, nameHistory, schedule) {
             let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
-            html += `<div class="team-section">`;
+            html += `<div class="team-history-card" style="max-width:500px;margin:2em auto 2em auto;padding:2em 2em 1em 2em;background:linear-gradient(135deg,#e3e8ee 0%,#f6f8fa 100%);border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,0.07);position:relative;">`;
+            html += `<div class="team-number">${team[1]}</div>`;
+            html += `<div class="team-history-content" style="display:flex;flex-direction:column;align-items:center;">`;
             if (team[3]) {
-                html += `<img class="team-logo" src="${team[3]}" alt="${team[2]} logo" onerror="this.style.display='none'">`;
+                html += `<div class="team-logo-wrap" style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:50%;margin-bottom:1em;box-shadow:0 2px 8px rgba(0,188,212,0.07);">
+                    <img class="team-logo" src="${team[3]}" alt="${team[2]} logo" style="width:70px;height:70px;object-fit:contain;border-radius:50%;background:#f6f8fa;" onerror="this.style.display='none'">
+                </div>`;
             }
-            html += `<div class="team-name">#${team[1]} - ${team[2]}</div>`;
+            html += `<h2 class="team-name" style="margin:0.5em 0 0.5em 0;font-size:1.15em;font-weight:700;color:#222;text-align:center;letter-spacing:0.5px;">${team[2]}</h2>`;
 
-            // Current owner is the most recent owner by year
             const currentOwner = owners.length > 0
                 ? owners.slice().sort((a, b) => b.year - a.year)[0].owner
                 : '';
-            html += `<div><strong>Current Owner:</strong> ${currentOwner}</div>`;
+            html += `<div class="team-owner" style="margin-top:0.5em;font-size:1em;color:#333;text-align:center;background:#e0f7fa;border-radius:6px;padding:0.4em 0.8em;display:inline-block;">
+                        <span class="owner-label" style="font-weight:500;color:#0097a7;margin-right:0.3em;">Owner:</span>
+                        <span class="owner-name" style="font-weight:700;color:#222;">${currentOwner}</span>
+                    </div>`;
 
-            // Team Name Change History
+            // Team Name History
             if (nameHistory.length > 1) {
                 html += `<div style="margin:1em 0;"><strong>Team Name History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
                 nameHistory.forEach(entry => {
@@ -99,10 +161,9 @@
                 html += `</ul></div>`;
             }
 
-            // Owner History as bulleted list
+            // Owner History
             html += `<div style="margin:1em 0;"><strong>Owner History:</strong><ul style="margin:0.5em 0 0 1.5em;">`;
             if (owners.length > 0) {
-                // Sort descending by start year
                 owners = owners.slice().sort((a, b) => b.year - a.year);
                 for (let i = 0; i < owners.length; i++) {
                     const startYear = owners[i].year;
@@ -119,12 +180,34 @@
             }
             html += `</ul></div>`;
 
-            // Team Schedule for all historic names
-            const allNames = nameHistory.map(n => n.name);
-            html += renderTeamSchedule(schedule, allNames);
+            html += `</div>`; // .team-history-content
 
-            html += `</div>`;
+            // Team Schedule with filters
+            let filterYear = '', filterWeek = '', filterOpponent = '';
+            function renderScheduleTable() {
+                document.getElementById('team-schedule-container').innerHTML =
+                    renderTeamSchedule(schedule, nameHistory.map(n => n.name), filterWeek, filterYear, filterOpponent);
+                setTimeout(() => {
+                    const yearSel = document.getElementById('filter-year');
+                    const weekSel = document.getElementById('filter-week');
+                    const oppSel = document.getElementById('filter-opponent');
+                    const clearBtn = document.getElementById('clear-schedule-filters');
+                    if (yearSel) yearSel.value = filterYear;
+                    if (weekSel) weekSel.value = filterWeek;
+                    if (oppSel) oppSel.value = filterOpponent;
+                    if (yearSel) yearSel.onchange = function() { filterYear = this.value; renderScheduleTable(); };
+                    if (weekSel) weekSel.onchange = function() { filterWeek = this.value; renderScheduleTable(); };
+                    if (oppSel) oppSel.onchange = function() { filterOpponent = this.value; renderScheduleTable(); };
+                    if (clearBtn) clearBtn.onclick = function() {
+                        filterYear = ''; filterWeek = ''; filterOpponent = '';
+                        renderScheduleTable();
+                    };
+                }, 0);
+            }
+
+            html += `<div id="team-schedule-container"></div>`;
             document.getElementById('history-container').innerHTML = html;
+            renderScheduleTable();
         }
 
         // Load all CSVs and render
@@ -155,6 +238,32 @@
                                         row[0] && !row[0].startsWith('//') && row[0] !== 'Year'
                                     );
                                     const teamNum = getTeamNumberFromQuery();
+
+                                    if (!teamNum) {
+                                        // No team selected, show dropdown
+                                        let html = `<div class="section"><h2>Select a Team</h2><select id="select-team"><option value="">-- Select Team --</option>`;
+                                        // Only show latest team names for each team number
+                                        const latestTeams = {};
+                                        teamsData.forEach(row => {
+                                            const year = parseInt(row[0]);
+                                            const num = row[1];
+                                            if (!latestTeams[num] || year > parseInt(latestTeams[num][0])) {
+                                                latestTeams[num] = row;
+                                            }
+                                        });
+                                        Object.values(latestTeams).sort((a, b) => parseInt(a[1]) - parseInt(b[1])).forEach(row => {
+                                            html += `<option value="${row[1]}">${row[2]}</option>`;
+                                        });
+                                        html += `</select></div>`;
+                                        document.getElementById('history-container').innerHTML = html;
+                                        document.getElementById('select-team').addEventListener('change', function() {
+                                            if (this.value) {
+                                                window.location.search = '?team=' + encodeURIComponent(this.value);
+                                            }
+                                        });
+                                        return;
+                                    }
+
                                     const team = getLatestTeamInfo(teamsData, teamNum);
                                     const nameHistory = getTeamNameHistory(teamsData, teamNum);
                                     const teamOwners = ownersData
@@ -162,7 +271,6 @@
                                         .map(row => ({ year: parseInt(row[0]), owner: row[2] }))
                                         .sort((a, b) => a.year - b.year);
 
-                                    // Find all schedule rows where this team is Home or Away under any name
                                     const allNames = nameHistory.map(n => n.name);
                                     const teamSchedule = scheduleData.filter(row =>
                                         allNames.includes(row[3]) || allNames.includes(row[4])

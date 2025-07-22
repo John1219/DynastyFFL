@@ -2,35 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynasty FFL League</title>
+    <title>Dynasty FFL Rosters</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme.css">
 </head>
 <body>
-    <h1>Dynasty Fantasy Football League</h1>
+    <h1>Current Rosters</h1>
     <div id="menu-bar"></div>
     <script>
         fetch('menu.html')
             .then(r => r.text())
             .then(html => document.getElementById('menu-bar').outerHTML = html);
     </script>
-    <div class="section" id="about">
-        <h2>About the League</h2>
-        <p>
-            Welcome to the Dynasty FFL! Established in 2011, our league is built for fantasy football managers who love the challenge of long-term team building, trading, and competition. 
-            Each manager keeps their roster year after year, making every draft pick and trade matter. 
-        </p>
-        <ul>
-            <li><strong>Founded:</strong> 2011</li>
-            <li><strong>Format:</strong> Dynasty (keep all players, annual rookie draft)</li>
-            <li><strong>Teams:</strong> 14</li>
-            <li><strong>Commissioner:</strong> John Thompson</li>
-            <li><strong>League Website:</strong> <a href="https://www.rtsports.com/fantasy-football-league/81689">rtsports.com</a></li>
-        </ul>
-    </div>
     <div class="section" id="rosters">
-        <h2>Current Rosters</h2>
         <div class="filters">
             <label>
                 Team:
@@ -55,12 +40,6 @@
             <button id="clear-filters">Clear</button>
         </div>
         <div id="table-container">Loading...</div>
-    </div>
-    <div class="section" id="schedule">
-        <h2>2025 League Schedule</h2>
-        <iframe src="../data/2025-schedule-81689.pdf" width="100%" height="800px" style="border:1px solid #ccc;">
-            <p>Your browser does not support PDFs. <a href="../data/2025-schedule-81689.pdf">Download the schedule PDF</a>.</p>
-        </iframe>
     </div>
     <script>
         const csvPath = '../data/81689-rosters-nfl-1.csv';
@@ -142,40 +121,5 @@
             document.querySelectorAll('.filters select').forEach(select => select.value = '');
             renderTable(allData);
         });
-
-        // Load and display the schedule CSV as a table
-        const schedulePath = '../data/2025-schedule-81689.csv';
-        function renderScheduleTable(data) {
-            if (!data || data.length === 0) {
-                document.getElementById('schedule-table').innerText = 'No schedule data available.';
-                return;
-            }
-            let html = '<table><thead><tr>';
-            data[0].forEach(h => html += `<th>${h}</th>`);
-            html += '</tr></thead><tbody>';
-            data.slice(1).forEach(row => {
-                html += '<tr>';
-                row.forEach(cell => html += `<td>${cell}</td>`);
-                html += '</tr>';
-            });
-            html += '</tbody></table>';
-            document.getElementById('schedule-table').innerHTML = html;
-        }
-
-        fetch(schedulePath)
-            .then(response => response.text())
-            .then(csvText => {
-                Papa.parse(csvText, {
-                    header: false,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        renderScheduleTable(results.data);
-                    }
-                });
-            })
-            .catch(err => {
-                document.getElementById('schedule-table').innerText = 'Failed to load schedule.';
-            });
     </script>
 </body>
-</html>

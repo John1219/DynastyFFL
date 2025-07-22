@@ -4,28 +4,17 @@
     <meta charset="UTF-8">
     <title>Dynasty FFL Schedule</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1 { color: #2c3e50; }
-        nav { margin-bottom: 2em; }
-        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
-        nav a:hover { text-decoration: underline; }
-        .filters { margin-bottom: 1em; }
-        .filters label { margin-right: 1em; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
-        th { background: #f2f2f2; }
-        tr:nth-child(even) { background: #fafafa; }
-        .section { margin-bottom: 2em; }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <h1>Dynasty FFL Schedule</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="teams.html">Teams</a>
-        <a href="schedule.html">Schedule</a>
-    </nav>
+    <div id="menu-bar"></div>
+    <script>
+        fetch('menu.html')
+            .then(r => r.text())
+            .then(html => document.getElementById('menu-bar').outerHTML = html);
+    </script>
     <div class="section">
         <div class="filters">
             <label>

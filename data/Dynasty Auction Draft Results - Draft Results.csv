@@ -1,4 +1,4 @@
-Timestamp,Player Name,Position,Team,winning amount,,Notes
+#,Player Name,Position,Team,Winning Bid Amount,,Notes
 1,Aaron Rodgers,QB,The Great Chewbaccas,$62,,
 2,Drew Brees,QB,Ghost of Derrick Thomas,$50,,
 3,Rashard Mendenhall,RB,Brees Nuts,$32,,
@@ -35,7 +35,7 @@ Timestamp,Player Name,Position,Team,winning amount,,Notes
 34,Brandon Marshall,WR,Pillshovlers,$35,,
 35,Desean Jackson,WR,Team Thompson,$57,,
 36,Ray Rice ,RB,Crackers,$46,,
-37,Tim Tebow,QB ,Team Colbert,$17,,
+37,Tim Tebow,QB,Team Colbert,$17,,
 38,Mark Ingram,RB,Brees Nuts,$35,,
 39,Peyton Hillis,RB,Phinatics,$38,,
 40,Dallas Clark,TE,Team Christman,$39,,

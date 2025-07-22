@@ -4,28 +4,17 @@
     <meta charset="UTF-8">
     <title>Dynasty FFL Auction Draft Results</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1 { color: #2c3e50; }
-        nav { margin-bottom: 2em; }
-        nav a { margin-right: 1em; text-decoration: none; color: #2980b9; }
-        nav a:hover { text-decoration: underline; }
-        .filters { margin-bottom: 1em; }
-        .filters label { margin-right: 1em; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
-        th { background: #f2f2f2; }
-        tr:nth-child(even) { background: #fafafa; }
-        .section { margin-bottom: 2em; }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <h1>Dynasty FFL Auction Draft Results</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="teams.html">Teams</a>
-        <a href="auction-draft.html">Auction Draft</a>
-    </nav>
+    <div id="menu-bar"></div>
+    <script>
+        fetch('menu.html')
+            .then(r => r.text())
+            .then(html => document.getElementById('menu-bar').outerHTML = html);
+    </script>
     <div class="section">
         <div class="filters">
             <label>
@@ -35,6 +24,10 @@
             <label>
                 Player:
                 <input type="text" id="filter-player" placeholder="Search player...">
+            </label>
+            <label>
+                Position:
+                <select id="filter-position"><option value="">All</option></select>
             </label>
             <button id="clear-filters">Clear</button>
         </div>
@@ -59,7 +52,7 @@
         }
 
         function populateDropdowns(data) {
-            // Try to find the Team column index
+            // Team dropdown
             const teamIdx = headers.findIndex(h => /team/i.test(h));
             const teams = new Set();
             data.forEach(row => {
@@ -73,18 +66,35 @@
                 option.textContent = opt;
                 teamSel.appendChild(option);
             });
+
+            // Position dropdown
+            const posIdx = headers.findIndex(h => /position/i.test(h));
+            const positions = new Set();
+            data.forEach(row => {
+                if (posIdx >= 0 && row[posIdx]) positions.add(row[posIdx]);
+            });
+            const posSel = document.getElementById('filter-position');
+            while (posSel.options.length > 1) posSel.remove(1);
+            Array.from(positions).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                posSel.appendChild(option);
+            });
         }
 
         function filterData() {
             const team = document.getElementById('filter-team').value.toLowerCase();
             const player = document.getElementById('filter-player').value.toLowerCase();
-            // Try to find the Team and Player column indexes
+            const position = document.getElementById('filter-position').value.toLowerCase();
             const teamIdx = headers.findIndex(h => /team/i.test(h));
             const playerIdx = headers.findIndex(h => /player/i.test(h));
+            const posIdx = headers.findIndex(h => /position/i.test(h));
             const filtered = allData.filter(row => {
                 const teamMatch = !team || (teamIdx >= 0 && row[teamIdx].toLowerCase() === team);
                 const playerMatch = !player || (playerIdx >= 0 && row[playerIdx].toLowerCase().includes(player));
-                return teamMatch && playerMatch;
+                const posMatch = !position || (posIdx >= 0 && row[posIdx].toLowerCase() === position);
+                return teamMatch && playerMatch && posMatch;
             });
             renderTable(filtered);
         }
@@ -96,9 +106,7 @@
                     header: false,
                     skipEmptyLines: true,
                     complete: function(results) {
-                        // Assign headers from the first row
                         headers = results.data[0];
-                        // Remove header and commented lines from data
                         allData = results.data.slice(1).filter(row =>
                             row[0] && !row[0].startsWith('//')
                         );
@@ -113,9 +121,11 @@
 
         document.getElementById('filter-team').addEventListener('change', filterData);
         document.getElementById('filter-player').addEventListener('input', filterData);
+        document.getElementById('filter-position').addEventListener('change', filterData);
         document.getElementById('clear-filters').addEventListener('click', () => {
             document.getElementById('filter-team').value = '';
             document.getElementById('filter-player').value = '';
+            document.getElementById('filter-position').value = '';
             renderTable(allData);
         });
     </script>
