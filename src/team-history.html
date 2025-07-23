@@ -367,11 +367,15 @@
     <button class="tab-btn active" id="tab-schedule-btn">Schedule</button>
     <button class="tab-btn" id="tab-roster-btn">Roster</button>
     <button class="tab-btn" id="tab-auction-btn">Auction Draft Results</button>
+    <button class="tab-btn" id="tab-transactions-btn">Transactions</button>
 </div>
 <div id="tab-content">
     <div id="team-schedule-container"></div>
     <div id="team-roster-container" style="display:none;"></div>
     <div id="team-auction-container" style="display:none;"></div>
+    <div id="team-transactions-container" style="display:none;">
+        <div id="team-transactions-table">Loading...</div>
+    </div>
 </div>
 `;
 
@@ -381,9 +385,11 @@
             const scheduleTabBtn = document.getElementById('tab-schedule-btn');
             const rosterTabBtn = document.getElementById('tab-roster-btn');
             const auctionTabBtn = document.getElementById('tab-auction-btn');
+            const transactionsTabBtn = document.getElementById('tab-transactions-btn');
             const scheduleContainer = document.getElementById('team-schedule-container');
             const rosterContainer = document.getElementById('team-roster-container');
             const auctionContainer = document.getElementById('team-auction-container');
+            const transactionsContainer = document.getElementById('team-transactions-container');
 
             // Render schedule table with filters
             let filterYear = '', filterWeek = '', filterOpponent = '';
@@ -409,22 +415,60 @@
             }
             renderScheduleTable();
 
+            // Load transactions for this team
+            function loadTeamTransactions(teamName, nameHistory) {
+                // Gather all prior team names (case-insensitive)
+                const allNames = nameHistory.map(n => n.name.trim().toLowerCase());
+                fetch('../data/Dynasty League Data - Transactions.csv')
+                    .then(response => response.text())
+                    .then(csvText => {
+                        Papa.parse(csvText, {
+                            header: false,
+                            skipEmptyLines: true,
+                            complete: function(results) {
+                                const headers = results.data[0];
+                                const allData = results.data.slice(1).filter(row =>
+                                    row[0] && !row[0].startsWith('//') &&
+                                    row[2] && allNames.includes(row[2].trim().toLowerCase())
+                                );
+                                let html = '<table class="history-table"><thead><tr>';
+                                headers.forEach(h => html += `<th>${h}</th>`);
+                                html += '</tr></thead><tbody>';
+                                allData.forEach(row => {
+                                    html += '<tr>';
+                                    row.forEach(cell => html += `<td>${cell}</td>`);
+                                    html += '</tr>';
+                                });
+                                html += '</tbody></table>';
+                                if (allData.length === 0) {
+                                    html += '<div style="margin:1em 0;">No transactions found for this team.</div>';
+                                }
+                                document.getElementById('team-transactions-table').innerHTML = html;
+                            }
+                        });
+                    });
+            }
+
             // Tab switching
             scheduleTabBtn.onclick = function() {
                 scheduleTabBtn.classList.add('active');
                 rosterTabBtn.classList.remove('active');
                 auctionTabBtn.classList.remove('active');
+                transactionsTabBtn.classList.remove('active');
                 scheduleContainer.style.display = '';
                 rosterContainer.style.display = 'none';
                 auctionContainer.style.display = 'none';
+                transactionsContainer.style.display = 'none';
             };
             rosterTabBtn.onclick = function() {
                 scheduleTabBtn.classList.remove('active');
                 rosterTabBtn.classList.add('active');
                 auctionTabBtn.classList.remove('active');
+                transactionsTabBtn.classList.remove('active');
                 scheduleContainer.style.display = 'none';
                 rosterContainer.style.display = '';
                 auctionContainer.style.display = 'none';
+                transactionsContainer.style.display = 'none';
                 renderTeamRoster(team).then(html => {
                     rosterContainer.innerHTML = html;
                 });
@@ -433,19 +477,32 @@
                 scheduleTabBtn.classList.remove('active');
                 rosterTabBtn.classList.remove('active');
                 auctionTabBtn.classList.add('active');
+                transactionsTabBtn.classList.remove('active');
                 scheduleContainer.style.display = 'none';
                 rosterContainer.style.display = 'none';
                 auctionContainer.style.display = '';
+                transactionsContainer.style.display = 'none';
                 renderAuctionDraftResults(nameHistory).then(html => {
                     auctionContainer.innerHTML = html;
                 });
+            };
+            transactionsTabBtn.onclick = function() {
+                scheduleTabBtn.classList.remove('active');
+                rosterTabBtn.classList.remove('active');
+                auctionTabBtn.classList.remove('active');
+                transactionsTabBtn.classList.add('active');
+                scheduleContainer.style.display = 'none';
+                rosterContainer.style.display = 'none';
+                auctionContainer.style.display = 'none';
+                transactionsContainer.style.display = '';
+                loadTeamTransactions(team[2], nameHistory); // Pass nameHistory
             };
         }
 
         // Load all CSVs and render
         Promise.all([
             fetch(teamsCsvPath).then(r => r.text()),
-            fetch(ownersCsvPath).then(r => r.text()),
+            fetch(ownersCsvPath).then(r => r.text()), // <-- fixed here
             fetch(scheduleCsvPath).then(r => r.text())
         ]).then(([teamsCsv, ownersCsv, scheduleCsv]) => {
             Papa.parse(teamsCsv, {
