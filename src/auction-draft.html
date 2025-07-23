@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <title>Dynasty FFL Auction Draft Results</title>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <!-- Add a bold, athletic font for football sites -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme.css">
 </head>
 <body>
-    <h1>Dynasty FFL Auction Draft Results</h1>
+    <h1 class="football-title">Dynasty FFL Auction Draft Results</h1>
     <div id="menu-bar"></div>
     <script>
         fetch('menu.html')
@@ -34,7 +36,7 @@
         <div id="draft-table">Loading...</div>
     </div>
     <script>
-        const csvPath = '../data/Dynasty Auction Draft Results - Draft Results.csv';
+        const csvPath = '../data/Dynasty League Data - Auction Draft Results.csv';
         let allData = [];
         let headers = [];
 

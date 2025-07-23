@@ -1,108 +1,141 @@
+/* --- Neumorphism Fantasy Football Theme --- */
 body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background: #f6f8fa;
+    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+    background: #e0e5ec;
     margin: 0;
     padding: 0;
 }
 h1, h2 {
     color: #222;
-    font-weight: 700;
+    font-weight: 900;
     margin-top: 2em;
     margin-bottom: 0.5em;
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px #fff, 0 1px 0 #bfc4cc;
+}
+.football-title, h1.football-title, h2.football-title {
+    font-family: 'Oswald', 'Roboto', 'Segoe UI', Arial, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #388e3c;
+    text-shadow: 0 2px 8px #fff, 0 1px 0 #bfc4cc;
+    font-size: 3em; /* Increased from default */
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
 }
 nav {
-    background: #222;
+    background: #e0e5ec;
     padding: 1em 0.5em;
     margin-bottom: 2em;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    box-shadow: 8px 8px 16px #bfc4cc, -8px -8px 16px #fff;
     display: flex;
     justify-content: center;
+    border-radius: 0 0 18px 18px;
 }
 nav a {
     margin: 0 1em;
     text-decoration: none;
-    color: #fff;
-    font-weight: 500;
-    font-size: 1.05em;
-    transition: color 0.2s;
+    color: #388e3c;
+    font-weight: 700;
+    font-size: 1.08em;
+    letter-spacing: 1px;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    box-shadow: 4px 4px 8px #bfc4cc, -4px -4px 8px #fff;
+    transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+    background: #e0e5ec;
 }
-nav a:hover {
-    color: #00bcd4;
+nav a:hover, nav a.active {
+    color: #ffb300;
+    background: #e0e5ec;
+    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
 }
 .section {
     max-width: 1100px;
     margin: 0 auto;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    background: #e0e5ec;
+    border-radius: 18px;
+    box-shadow: 8px 8px 24px #bfc4cc, -8px -8px 24px #fff;
     padding: 2em 2em 1em 2em;
 }
 .filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 1em;
+    gap: 1.2em;
     align-items: center;
     margin-bottom: 1.5em;
+    background: #e0e5ec;
+    border-radius: 14px;
+    padding: 1em 1em 0.5em 1em;
+    box-shadow: 4px 4px 12px #bfc4cc, -4px -4px 12px #fff;
 }
 .filters label {
-    font-weight: 500;
-    color: #333;
+    font-weight: 700;
+    color: #388e3c;
+    letter-spacing: 0.5px;
 }
 .filters select,
 .filters input {
     padding: 0.5em 0.8em;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
+    border: none;
+    border-radius: 10px;
     font-size: 1em;
-    background: #f6f8fa;
-    transition: border-color 0.2s;
+    background: #e0e5ec;
+    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
+    transition: box-shadow 0.2s;
 }
 .filters select:focus,
 .filters input:focus {
-    border-color: #00bcd4;
+    box-shadow: 0 0 0 2px #ffb300, inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
     outline: none;
 }
-#clear-filters {
-    background: #00bcd4;
-    color: #fff;
+#clear-filters, #clear-type-filter, #clear-roster-filters, #clear-auction-filters {
+    background: #e0e5ec;
+    color: #388e3c;
     border: none;
-    border-radius: 6px;
-    padding: 0.6em 1.2em;
+    border-radius: 10px;
+    padding: 0.7em 1.4em;
     font-size: 1em;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: 4px 4px 12px #bfc4cc, -4px -4px 12px #fff;
+    transition: box-shadow 0.2s, color 0.2s;
 }
-#clear-filters:hover {
-    background: #0097a7;
+#clear-filters:hover, #clear-type-filter:hover, #clear-roster-filters:hover, #clear-auction-filters:hover {
+    color: #ffb300;
+    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
 }
 table {
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 1em;
-    background: #fff;
-    border-radius: 8px;
+    background: #e0e5ec;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    box-shadow: 8px 8px 24px #bfc4cc, -8px -8px 24px #fff;
 }
 th, td {
     border: none;
-    padding: 10px 12px;
+    padding: 14px 16px;
     text-align: left;
+    font-size: 1em;
 }
 th {
-    background: #e3e8ee;
-    color: #222;
-    font-weight: 700;
-    font-size: 1em;
+    background: #e0e5ec;
+    color: #388e3c;
+    font-weight: 900;
+    font-size: 1.05em;
+    letter-spacing: 1px;
+    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
 }
 tr:nth-child(even) {
     background: #f6f8fa;
 }
 tr:hover {
-    background: #e0f7fa;
+    background: #ffecb3;
+    transition: background 0.2s;
 }
 .team-list {
     display: grid;
@@ -112,9 +145,9 @@ tr:hover {
 }
 .team-card {
     border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #e3e8ee 0%, #f6f8fa 100%);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    border-radius: 18px;
+    background: #e0e5ec;
+    box-shadow: 8px 8px 32px #bfc4cc, -8px -8px 32px #fff;
     padding: 2em 1.5em 1.5em 1.5em;
     display: flex;
     flex-direction: column;
@@ -124,8 +157,9 @@ tr:hover {
     min-width: 0;
 }
 .team-card:hover {
-    box-shadow: 0 8px 32px rgba(0,188,212,0.12);
-    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 16px 48px #bfc4cc, 0 16px 48px #fff;
+    transform: translateY(-6px) scale(1.04);
+    background: #f6f8fa;
 }
 .team-card-link {
     text-decoration: none;
@@ -138,13 +172,13 @@ tr:hover {
     position: absolute;
     top: 12px;
     right: 18px;
-    font-size: 0.7em;
-    color: #00bcd4;
+    font-size: 0.8em;
+    color: #ffb300;
     font-weight: bold;
-    background: #fff;
-    padding: 2px 6px;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0,188,212,0.08);
+    background: #e0e5ec;
+    padding: 3px 8px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
     z-index: 2;
 }
 .team-logo-wrap {
@@ -153,63 +187,67 @@ tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
+    background: #e0e5ec;
     border-radius: 50%;
     margin-bottom: 1em;
     margin-top: 0.5em;
-    box-shadow: 0 2px 8px rgba(0,188,212,0.07);
-    border: 2px solid #e3e8ee;
+    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
+    border: 2px solid #c8e6c9;
 }
 .team-logo {
     width: 70px;
     height: 70px;
     object-fit: contain;
     border-radius: 50%;
-    background: #f6f8fa;
+    background: #e0e5ec;
     display: block;
+    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
 }
 .team-card img {
     width: 70px;
     height: 70px;
     object-fit: contain;
     border-radius: 50%;
-    background: #f6f8fa;
+    background: #e0e5ec;
 }
 .team-name {
     margin: 0.5em 0 0.5em 0;
-    font-size: 1.15em;
-    font-weight: 700;
-    color: #222;
+    font-size: 1.25em;
+    font-weight: 900;
+    color: #388e3c;
     text-align: center;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #fff, 0 1px 0 #bfc4cc;
 }
 .team-owner {
     margin-top: 0.5em;
     font-size: 1em;
-    color: #333;
+    color: #388e3c;
     text-align: center;
-    background: #e0f7fa;
-    border-radius: 6px;
-    padding: 0.4em 0.8em;
+    background: #f6f8fa;
+    border-radius: 8px;
+    padding: 0.5em 1em;
     display: inline-block;
+    font-weight: 700;
+    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
 }
 .owner-label {
-    font-weight: 500;
-    color: #0097a7;
+    font-weight: 700;
+    color: #388e3c;
     margin-right: 0.3em;
 }
 .owner-name {
-    font-weight: 700;
+    font-weight: 900;
     color: #222;
 }
-/* Add these styles for team history card */
+/* Team history card styles */
 .team-history-card {
     max-width: 500px;
     margin: 2em auto 2em auto;
     padding: 2em 2em 1em 2em;
-    background: linear-gradient(135deg,#e3e8ee 0%,#f6f8fa 100%);
-    border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    background: #e0e5ec;
+    border-radius: 18px;
+    box-shadow: 8px 8px 32px #bfc4cc, -8px -8px 32px #fff;
     position: relative;
 }
 .team-history-content {
@@ -221,13 +259,13 @@ tr:hover {
     position: absolute;
     top: 12px;
     right: 18px;
-    font-size: 0.7em;
-    color: #00bcd4;
+    font-size: 0.8em;
+    color: #ffb300;
     font-weight: bold;
-    background: #fff;
-    padding: 2px 6px;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgba(0,188,212,0.08);
+    background: #e0e5ec;
+    padding: 3px 8px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
     z-index: 2;
 }
 .tabs {
@@ -237,23 +275,25 @@ tr:hover {
     margin-bottom: 1em;
 }
 .tab-btn {
-    background: #e3e8ee;
-    color: #222;
+    background: #e0e5ec;
+    color: #388e3c;
     border: none;
-    border-radius: 6px 6px 0 0;
-    padding: 0.7em 2em;
-    font-size: 1em;
-    font-weight: 500;
+    border-radius: 10px 10px 0 0;
+    padding: 0.8em 2.2em;
+    font-size: 1.08em;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: box-shadow 0.2s, color 0.2s;
+    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
 }
 .tab-btn.active {
-    background: #00bcd4;
-    color: #fff;
-    font-weight: 700;
+    background: #e0e5ec;
+    color: #ffb300;
+    font-weight: 900;
+    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
 }
 #tab-content {
-    min-height: 200px;
+    min-height: 220px;
 }
 @media (max-width: 900px) {
     .section { padding: 1em; }
@@ -264,7 +304,7 @@ tr:hover {
     .section { padding: 0.5em; }
     table, thead, tbody, th, td, tr { display: block; }
     th, td { padding: 8px 4px; }
-    th { background: #e3e8ee; }
+    th { background: #e0e5ec; }
     tr { margin-bottom: 1em; }
     .team-list {
         grid-template-columns: 1fr;

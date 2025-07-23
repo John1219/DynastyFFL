@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynasty FFL Transactions</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+    <h1 class="football-title">Dynasty FFL Transactions</h1>
+    <div id="menu-bar"></div>
+    <script>
+        fetch('menu.html')
+            .then(r => r.text())
+            .then(html => document.getElementById('menu-bar').outerHTML = html);
+    </script>
+    <div class="section">
+        <div class="filters" style="margin-bottom:1em;">
+            <label>
+                Type:
+                <select id="filter-type">
+                    <option value="">All</option>
+                </select>
+            </label>
+            <label>
+                Team:
+                <select id="filter-team">
+                    <option value="">All</option>
+                </select>
+            </label>
+            <button id="clear-type-filter" type="button">Clear</button>
+        </div>
+        <div id="transactions-table">Loading...</div>
+    </div>
+    <script>
+        const csvPath = '../data/Dynasty League Data - Transactions.csv';
+        let allData = [];
+        let headers = [];
+
+        function renderTable(data) {
+            let html = '<table class="history-table"><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            data.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => html += `<td>${cell}</td>`);
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            if (data.length === 0) {
+                html += '<div style="margin:1em 0;">No transactions found.</div>';
+            }
+            document.getElementById('transactions-table').innerHTML = html;
+        }
+
+        function populateTypeDropdown(data) {
+            const typeSet = new Set();
+            data.forEach(row => {
+                if (row[0]) typeSet.add(row[0]);
+            });
+            const typeSel = document.getElementById('filter-type');
+            while (typeSel.options.length > 1) typeSel.remove(1);
+            Array.from(typeSet).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                typeSel.appendChild(option);
+            });
+        }
+
+        function populateTeamDropdown(data) {
+            const teamSet = new Set();
+            data.forEach(row => {
+                if (row[2]) teamSet.add(row[2]);
+            });
+            const teamSel = document.getElementById('filter-team');
+            while (teamSel.options.length > 1) teamSel.remove(1);
+            Array.from(teamSet).sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                teamSel.appendChild(option);
+            });
+        }
+
+        function filterData() {
+            const type = document.getElementById('filter-type').value;
+            const team = document.getElementById('filter-team').value;
+            const filtered = allData.filter(row => {
+                return (!type || row[0] === type)
+                    && (!team || row[2] === team);
+            });
+            renderTable(filtered);
+        }
+
+        fetch(csvPath)
+            .then(response => response.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        headers = results.data[0];
+                        allData = results.data.slice(1).filter(row =>
+                            row[0] && !row[0].startsWith('//')
+                        );
+                        populateTypeDropdown(allData);
+                        populateTeamDropdown(allData);
+                        renderTable(allData);
+                    }
+                });
+            })
+            .catch(() => {
+                document.getElementById('transactions-table').innerText = 'Failed to load transactions data.';
+            });
+
+        document.getElementById('filter-type').addEventListener('change', filterData);
+        document.getElementById('filter-team').addEventListener('change', filterData);
+        document.getElementById('clear-type-filter').addEventListener('click', () => {
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-team').value = '';
+            renderTable(allData);
+        });
+    </script>
+</body>
+</html>
