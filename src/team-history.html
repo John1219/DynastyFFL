@@ -145,7 +145,8 @@
                                 const data = results.data.filter(row =>
                                     row[0] && !row[0].startsWith('//') && row[0] !== 'Team'
                                 );
-                                const headers = ["Team", "Player", "Position", "NFL Team", "Status"];
+                                // Hide Team column (index 0)
+                                const headers = ["Player", "Position", "NFL Team", "Status"];
                                 // Filter for this team name
                                 const filtered = data.filter(row => row[0].trim().toLowerCase() === team[2].trim().toLowerCase());
 
@@ -198,7 +199,8 @@
                                 html += '</tr></thead><tbody>';
                                 finalRows.forEach(row => {
                                     html += '<tr>';
-                                    row.forEach(cell => html += `<td>${cell}</td>`);
+                                    // Only show columns 1-4 (skip Team column)
+                                    row.slice(1, 5).forEach(cell => html += `<td>${cell}</td>`);
                                     html += '</tr>';
                                 });
                                 html += '</tbody></table>';
@@ -341,8 +343,7 @@
         }
 
         function renderTeamHistory(team, owners, nameHistory, schedule) {
-            let html = `<a class="back-link" href="teams.html">&larr; Back to Teams</a>`;
-            html += `
+            let html = `
 <div class="team-history-card">
     <div class="team-number">${team[1]}</div>
     <div class="team-history-content">

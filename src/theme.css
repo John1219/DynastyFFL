@@ -1,7 +1,7 @@
-/* --- Neumorphism Fantasy Football Theme --- */
+/* --- Dynamic Neumorphism, slightly darker palette --- */
 body {
     font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-    background: #e0e5ec;
+    background: #dbe4dd;
     margin: 0;
     padding: 0;
 }
@@ -21,15 +21,15 @@ h1, h2 {
     letter-spacing: 2px;
     color: #388e3c;
     text-shadow: 0 2px 8px #fff, 0 1px 0 #bfc4cc;
-    font-size: 3em; /* Increased from default */
+    font-size: 4em;
     margin-top: 1.5em;
     margin-bottom: 0.5em;
 }
 nav {
-    background: #e0e5ec;
+    background: #dbe4dd;
     padding: 1em 0.5em;
     margin-bottom: 2em;
-    box-shadow: 8px 8px 16px #bfc4cc, -8px -8px 16px #fff;
+    box-shadow: 8px 8px 16px #b2bcb5, -8px -8px 16px #f3f6f4;
     display: flex;
     justify-content: center;
     border-radius: 0 0 18px 18px;
@@ -43,22 +43,30 @@ nav a {
     letter-spacing: 1px;
     padding: 0.5em 1em;
     border-radius: 12px;
-    box-shadow: 4px 4px 8px #bfc4cc, -4px -4px 8px #fff;
+    background: #dbe4dd;
+    box-shadow: 4px 4px 8px #b2bcb5, -4px -4px 8px #f3f6f4;
     transition: box-shadow 0.2s, background 0.2s, color 0.2s;
-    background: #e0e5ec;
 }
 nav a:hover, nav a.active {
     color: #ffb300;
-    background: #e0e5ec;
-    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
+    background: #e5ede7;
+    box-shadow: inset 2px 2px 6px #b2bcb5, inset -2px -2px 6px #f3f6f4;
 }
-.section {
-    max-width: 1100px;
-    margin: 0 auto;
-    background: #e0e5ec;
+.section, .team-history-card, .filters, table, .team-card, .team-logo-wrap {
+    background: #dbe4dd;
     border-radius: 18px;
-    box-shadow: 8px 8px 24px #bfc4cc, -8px -8px 24px #fff;
-    padding: 2em 2em 1em 2em;
+    box-shadow:
+        8px 8px 24px #b2bcb5,
+        -8px -8px 24px #f3f6f4,
+        0 1.5px 8px 0 #388e3c33;
+    transition: box-shadow 0.25s, background 0.25s;
+}
+.section:hover, .team-history-card:hover, .team-card:hover {
+    box-shadow:
+        0 8px 32px #b2bcb5,
+        0 -8px 32px #f3f6f4,
+        0 2px 16px 0 #388e3c44;
+    background: #e5ede7;
 }
 .filters {
     display: flex;
@@ -66,10 +74,10 @@ nav a:hover, nav a.active {
     gap: 1.2em;
     align-items: center;
     margin-bottom: 1.5em;
-    background: #e0e5ec;
+    background: #dbe4dd;
     border-radius: 14px;
     padding: 1em 1em 0.5em 1em;
-    box-shadow: 4px 4px 12px #bfc4cc, -4px -4px 12px #fff;
+    box-shadow: 4px 4px 12px #b2bcb5, -4px -4px 12px #f3f6f4;
 }
 .filters label {
     font-weight: 700;
@@ -82,17 +90,19 @@ nav a:hover, nav a.active {
     border: none;
     border-radius: 10px;
     font-size: 1em;
-    background: #e0e5ec;
-    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
-    transition: box-shadow 0.2s;
+    background: #dbe4dd;
+    color: #388e3c;
+    box-shadow: inset 2px 2px 6px #b2bcb5, inset -2px -2px 6px #f3f6f4;
+    transition: box-shadow 0.2s, background 0.2s;
 }
 .filters select:focus,
 .filters input:focus {
-    box-shadow: 0 0 0 2px #ffb300, inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
+    box-shadow: 0 0 0 2px #388e3c, inset 2px 2px 6px #b2bcb5, inset -2px -2px 6px #f3f6f4;
     outline: none;
+    background: #e5ede7;
 }
-#clear-filters, #clear-type-filter, #clear-roster-filters, #clear-auction-filters {
-    background: #e0e5ec;
+#clear-filters, #clear-type-filter, #clear-schedule-filters, #clear-roster-filters, #clear-auction-filters {
+    background: #dbe4dd;
     color: #388e3c;
     border: none;
     border-radius: 10px;
@@ -100,21 +110,23 @@ nav a:hover, nav a.active {
     font-size: 1em;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 4px 4px 12px #bfc4cc, -4px -4px 12px #fff;
-    transition: box-shadow 0.2s, color 0.2s;
+    box-shadow: 4px 4px 12px #b2bcb5, -4px -4px 12px #f3f6f4;
+    transition: box-shadow 0.2s, color 0.2s, background 0.2s;
 }
-#clear-filters:hover, #clear-type-filter:hover, #clear-roster-filters:hover, #clear-auction-filters:hover {
+#clear-filters:hover, #clear-type-filter:hover, #clear-schedule-filters:hover, #clear-roster-filters:hover, #clear-auction-filters:hover {
     color: #ffb300;
-    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
+    background: #e5ede7;
+    box-shadow: inset 2px 2px 6px #b2bcb5, inset -2px -2px 6px #f3f6f4;
 }
 table {
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 1em;
-    background: #e0e5ec;
+    background: #dbe4dd;
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 8px 8px 24px #bfc4cc, -8px -8px 24px #fff;
+    box-shadow: 8px 8px 24px #b2bcb5, -8px -8px 24px #f3f6f4;
+    transition: box-shadow 0.2s, background 0.2s;
 }
 th, td {
     border: none;
@@ -123,15 +135,15 @@ th, td {
     font-size: 1em;
 }
 th {
-    background: #e0e5ec;
+    background: #dbe4dd;
     color: #388e3c;
     font-weight: 900;
     font-size: 1.05em;
     letter-spacing: 1px;
-    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
+    box-shadow: 2px 2px 6px #b2bcb5, -2px -2px 6px #f3f6f4;
 }
 tr:nth-child(even) {
-    background: #f6f8fa;
+    background: #e5ede7;
 }
 tr:hover {
     background: #ffecb3;
@@ -146,20 +158,20 @@ tr:hover {
 .team-card {
     border: none;
     border-radius: 18px;
-    background: #e0e5ec;
-    box-shadow: 8px 8px 32px #bfc4cc, -8px -8px 32px #fff;
+    background: #dbe4dd;
+    box-shadow: 8px 8px 32px #b2bcb5, -8px -8px 32px #f3f6f4;
     padding: 2em 1.5em 1.5em 1.5em;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    transition: box-shadow 0.2s, transform 0.2s;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
     min-width: 0;
 }
 .team-card:hover {
-    box-shadow: 0 16px 48px #bfc4cc, 0 16px 48px #fff;
+    box-shadow: 0 16px 48px #b2bcb5, 0 16px 48px #f3f6f4;
     transform: translateY(-6px) scale(1.04);
-    background: #f6f8fa;
+    background: #e5ede7;
 }
 .team-card-link {
     text-decoration: none;
@@ -175,10 +187,10 @@ tr:hover {
     font-size: 0.8em;
     color: #ffb300;
     font-weight: bold;
-    background: #e0e5ec;
+    background: #dbe4dd;
     padding: 3px 8px;
     border-radius: 8px;
-    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
+    box-shadow: 2px 2px 6px #b2bcb5, -2px -2px 6px #f3f6f4;
     z-index: 2;
 }
 .team-logo-wrap {
@@ -187,11 +199,11 @@ tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #e0e5ec;
+    background: #dbe4dd;
     border-radius: 50%;
     margin-bottom: 1em;
     margin-top: 0.5em;
-    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
+    box-shadow: 2px 2px 8px #b2bcb5, -2px -2px 8px #f3f6f4;
     border: 2px solid #c8e6c9;
 }
 .team-logo {
@@ -199,16 +211,16 @@ tr:hover {
     height: 70px;
     object-fit: contain;
     border-radius: 50%;
-    background: #e0e5ec;
+    background: #dbe4dd;
     display: block;
-    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
+    box-shadow: 2px 2px 8px #b2bcb5, -2px -2px 8px #f3f6f4;
 }
 .team-card img {
     width: 70px;
     height: 70px;
     object-fit: contain;
     border-radius: 50%;
-    background: #e0e5ec;
+    background: #dbe4dd;
 }
 .team-name {
     margin: 0.5em 0 0.5em 0;
@@ -224,12 +236,12 @@ tr:hover {
     font-size: 1em;
     color: #388e3c;
     text-align: center;
-    background: #f6f8fa;
+    background: #e5ede7;
     border-radius: 8px;
     padding: 0.5em 1em;
     display: inline-block;
     font-weight: 700;
-    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
+    box-shadow: 2px 2px 8px #b2bcb5, -2px -2px 8px #f3f6f4;
 }
 .owner-label {
     font-weight: 700;
@@ -245,9 +257,9 @@ tr:hover {
     max-width: 500px;
     margin: 2em auto 2em auto;
     padding: 2em 2em 1em 2em;
-    background: #e0e5ec;
+    background: #dbe4dd;
     border-radius: 18px;
-    box-shadow: 8px 8px 32px #bfc4cc, -8px -8px 32px #fff;
+    box-shadow: 8px 8px 32px #b2bcb5, -8px -8px 32px #f3f6f4;
     position: relative;
 }
 .team-history-content {
@@ -262,10 +274,10 @@ tr:hover {
     font-size: 0.8em;
     color: #ffb300;
     font-weight: bold;
-    background: #e0e5ec;
+    background: #dbe4dd;
     padding: 3px 8px;
     border-radius: 8px;
-    box-shadow: 2px 2px 6px #bfc4cc, -2px -2px 6px #fff;
+    box-shadow: 2px 2px 6px #b2bcb5, -2px -2px 6px #f3f6f4;
     z-index: 2;
 }
 .tabs {
@@ -275,7 +287,7 @@ tr:hover {
     margin-bottom: 1em;
 }
 .tab-btn {
-    background: #e0e5ec;
+    background: #dbe4dd;
     color: #388e3c;
     border: none;
     border-radius: 10px 10px 0 0;
@@ -283,17 +295,55 @@ tr:hover {
     font-size: 1.08em;
     font-weight: 700;
     cursor: pointer;
-    transition: box-shadow 0.2s, color 0.2s;
-    box-shadow: 2px 2px 8px #bfc4cc, -2px -2px 8px #fff;
+    transition: box-shadow 0.2s, color 0.2s, background 0.2s;
+    box-shadow: 2px 2px 8px #b2bcb5, -2px -2px 8px #f3f6f4;
 }
 .tab-btn.active {
-    background: #e0e5ec;
+    background: #e5ede7;
     color: #ffb300;
     font-weight: 900;
-    box-shadow: inset 2px 2px 6px #bfc4cc, inset -2px -2px 6px #fff;
+    box-shadow: inset 2px 2px 6px #b2bcb5, inset -2px -2px 6px #f3f6f4;
 }
 #tab-content {
     min-height: 220px;
+}
+/* --- RSS Feed Viewer Styles --- */
+.rss-feed-section {
+    max-width: 700px;
+    margin: 2em auto;
+    background: #dbe4dd;
+    border-radius: 18px;
+    box-shadow: 8px 8px 24px #b2bcb5, -8px -8px 24px #f3f6f4;
+    padding: 2em;
+}
+.rss-feed-title {
+    font-family: 'Oswald', 'Roboto', Arial, sans-serif;
+    font-size: 2em;
+    color: #388e3c;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.rss-item {
+    background: #e5ede7;
+    border-radius: 10px;
+    box-shadow: 2px 2px 8px #b2bcb5, -2px -2px 8px #f3f6f4;
+    margin-bottom: 1.5em;
+    padding: 1em;
+}
+.rss-item-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #388e3c;
+    margin-bottom: 0.5em;
+}
+.rss-item-date {
+    font-size: 0.95em;
+    color: #888;
+    margin-bottom: 0.5em;
+}
+.rss-item-desc {
+    font-size: 1em;
+    color: #222;
 }
 @media (max-width: 900px) {
     .section { padding: 1em; }
@@ -304,7 +354,7 @@ tr:hover {
     .section { padding: 0.5em; }
     table, thead, tbody, th, td, tr { display: block; }
     th, td { padding: 8px 4px; }
-    th { background: #e0e5ec; }
+    th { background: #dbe4dd; }
     tr { margin-bottom: 1em; }
     .team-list {
         grid-template-columns: 1fr;

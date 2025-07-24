@@ -2,39 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dynasty FFL League</title>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <title>Dynasty FFL RSS Feed Viewer</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Oswald:700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="theme.css">
-    <script src="main.js"></script>
-    <script>loadMenuBar();</script>
 </head>
 <body>
-    <h1 class="football-title">Dynasty Fantasy Football League</h1>
+    <h1 class="football-title">Fantasy Football News Feed</h1>
     <div id="menu-bar"></div>
-    <div class="section" id="about">
-        <h2>About the League</h2>
-        <p>
-            Welcome to the Dynasty FFL! Established in 2011, our league is built for fantasy football managers who love the challenge of long-term team building, trading, and competition. 
-            Each manager keeps their roster year after year, making every draft pick and trade matter. 
-        </p>
-        <ul>
-            <li><strong>Founded:</strong> 2011</li>
-            <li><strong>Format:</strong> Dynasty (keep all players, annual rookie draft)</li>
-            <li><strong>Teams:</strong> 14</li>
-            <li><strong>Commissioner:</strong> John Thompson</li>
-            <li><strong>League Website:</strong> <a href="https://www.rtsports.com/fantasy-football-league/81689">rtsports.com</a></li>
-        </ul>
-    </div>
-    <div class="section rss-feed-section" style="max-width: 700px; margin: 2em auto;">
+    <script>
+        fetch('menu.html')
+            .then(r => r.text())
+            .then(html => document.getElementById('menu-bar').outerHTML = html);
+    </script>
+    <div class="rss-feed-section">
         <div class="rss-feed-title">Latest Fantasy Football Headlines</div>
         <div id="rss-feed-container">Loading...</div>
     </div>
     <script>
-        // RSS feed viewer for NBC Sports Fantasy Football Player News
+        // Example RSS feed (replace with your preferred feed)
         const rssUrl = "https://www.nbcsports.com/fantasy/football/player-news.rss";
         function fetchRSSFeed(url) {
+            // Use rss2json public API as browser can't fetch RSS XML directly
             fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`)
                 .then(r => r.json())
                 .then(data => {
