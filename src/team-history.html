@@ -428,16 +428,41 @@
                             skipEmptyLines: true,
                             complete: function(results) {
                                 const headers = results.data[0];
+                                // Hide the 'Team 1' column (index 2)
+                                // Swap 'Players 1' (index 3) and 'Team 2' (index 4)
+                                // New order: [0,1,3,4,5,6,...] with 3 and 4 swapped, and 2 omitted
+
+                                // Build new header order
+                                const newHeaderOrder = [];
+                                for (let i = 0; i < headers.length; i++) {
+                                    if (i === 2) continue; // skip Team 1
+                                    if (i === 3) {
+                                        newHeaderOrder.push(4); // Team 2 (to be renamed)
+                                        newHeaderOrder.push(3); // Players 1
+                                        i++; // skip 4, since we just added it
+                                    } else if (i > 4) {
+                                        newHeaderOrder.push(i);
+                                    } else if (i < 2) {
+                                        newHeaderOrder.push(i);
+                                    }
+                                }
+                                // Map headers, renaming 'Team 2' to 'Trade Partner'
+                                const visibleHeaders = newHeaderOrder.map(i =>
+                                    i === 3 && headers[3] === 'Team 2' ? 'Trade Partner' : headers[i]
+                                );
+
                                 const allData = results.data.slice(1).filter(row =>
                                     row[0] && !row[0].startsWith('//') &&
                                     row[2] && allNames.includes(row[2].trim().toLowerCase())
                                 );
                                 let html = '<table class="history-table"><thead><tr>';
-                                headers.forEach(h => html += `<th>${h}</th>`);
+                                visibleHeaders.forEach(h => html += `<th>${h}</th>`);
                                 html += '</tr></thead><tbody>';
                                 allData.forEach(row => {
                                     html += '<tr>';
-                                    row.forEach(cell => html += `<td>${cell}</td>`);
+                                    newHeaderOrder.forEach(i => {
+                                        html += `<td>${row[i]}</td>`;
+                                    });
                                     html += '</tr>';
                                 });
                                 html += '</tbody></table>';
